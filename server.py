@@ -10,8 +10,33 @@ app = Flask(__name__)
 
 @app.route('/')
 def home_page():
-    now = datetime.datetime.now()
-    return render_template('home.html', current_time=now.ctime())
+    return render_template('home.html')
+
+
+@app.route('/news')
+def news_page():
+    return render_template('news.html')
+@app.route('/sport')
+def sport_page():
+    return render_template('sport.html')
+@app.route('/technology')
+def technology_page():
+    return render_template('technology.html')
+@app.route('/music')
+def music_page():
+    return render_template('music.html')
+@app.route('/events')
+def events_page():
+    return render_template('events.html')
+@app.route('/login')
+def login_page():
+    return render_template('login.html')
+@app.route('/contact')
+def contact_page():
+    return render_template('contact.html')
+@app.route('/about')
+def about_page():
+    return render_template('about.html')
 
 
 if __name__ == '__main__':
