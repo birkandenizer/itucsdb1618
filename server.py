@@ -65,6 +65,17 @@ def initialize_database():
         FOLLOWERCOUNT)
         VALUES (1, 'onerut', 'Utku', 'Oner', 'onerut@itu.edu.tr', 'admin', 0)"""
         cursor.execute(query)
+        
+        query = """DROP TABLE IF EXISTS CONTACT"""
+        cursor.execute(query)
+
+        query = """CREATE TABLE IF NOT EXISTS CONTACT (TICKET_ID INT PRIMARY KEY NOT NULL, TOPIC VARCHAR(20) NOT NULL,
+         NAME VARCHAR(20) NOT NULL, SURNAME VARCHAR(20) NOT NULL, USER_TEXT VARCHAR(200) NOT NULL, DATE INT NOT NULL)"""
+        cursor.execute(query)
+
+        query = """INSERT INTO CONTACT (TICKET_ID,TOPIC,NAME,SURNAME,USER_TEXT,DATE)
+        VALUES (10,'LOGIN','BIRKAN','DENIZER','Houston we have a problem',2016)"""
+        cursor.execute(query)
 
         connection.commit()
     return redirect(url_for('home_page'))
