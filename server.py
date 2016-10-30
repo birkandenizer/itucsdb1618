@@ -119,6 +119,18 @@ def initialize_database():
         """
         cursor.execute(query)
 
+        query = """ DROP TABLE IF EXISTS FOLLOWER """
+        cursor.execute(query)
+
+        query = """ CREATE TABLE IF NOT EXISTS FOLLOWER(
+        PERSON_ID INTEGER NOT NULL,
+        FOLLOWER_ID INTEGER NOT NULL,
+        DATE DATE NOT NULL )"""
+        cursor.execute(query)
+
+        query = """INSERT INTO FOLLOWER(PERSON_ID, FOLLOWER_ID, DATE) VALUES (1, 2, '2016-10-31')"""
+        cursor.execute(query)
+        
         connection.commit()
     return redirect(url_for('home_page'))
 
