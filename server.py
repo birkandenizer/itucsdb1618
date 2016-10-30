@@ -76,6 +76,27 @@ def initialize_database():
         query = """INSERT INTO CONTACT (TICKET_ID,TOPIC,NAME,SURNAME,USER_TEXT,DATE)
         VALUES (10,'LOGIN','BIRKAN','DENIZER','Houston we have a problem',2016)"""
         cursor.execute(query)
+        
+        query = """DROP TABLE IF EXISTS HYPES"""
+        cursor.execute(query)
+        
+        query = """CREATE TABLE IF NOT EXISTS HYPES (
+        HYPE_ID         INT             PRIMARY KEY     NOT NULL,
+        USER_ID         INT                             NOT NULL,
+        DATE            INT                             NOT NULL,
+        TEXT            VARCHAR(150)                    NOT NULL,
+        TOPIC           VARCHAR(20)                     NOT NULL
+        )"""
+        cursor.execute(query)
+
+        query = """INSERT INTO HYPES (
+        HYPE_ID,
+        USER_ID,
+        DATE,
+        TEXT,
+        TOPIC)
+        VALUES (152, 15, 2016, 'OMG!! MacBook Pro 2016 was released this week! It is even prettier than my girlfriend :)', 'Technology')"""
+        cursor.execute(query)
 
         connection.commit()
     return redirect(url_for('home_page'))
