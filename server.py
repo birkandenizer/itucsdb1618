@@ -40,6 +40,31 @@ def initialize_database():
 
         query = """INSERT INTO COUNTER (N) VALUES (0)"""
         cursor.execute(query)
+        
+        query = """DROP TABLE IF EXISTS USERS"""
+        cursor.execute(query)
+        
+        query = """CREATE TABLE IF NOT EXISTS USERS (
+        USER_ID        INT PRIMARY KEY NOT NULL,
+        USERNAME       VARCHAR(50) NOT NULL,
+        NAME           VARCHAR(50) NOT NULL,
+        SURNAME        VARCHAR(50) NOT NULL,
+        EMAIL          VARCHAR(50) NOT NULL,
+        PASSWORD       VARCHAR(25) NOT NULL,
+        FOLLOWERCOUNT  INT
+        )"""
+        cursor.execute(query)
+
+        query = """INSERT INTO USERS (
+        USER_ID,
+        USERNAME,
+        NAME,
+        SURNAME,
+        EMAIL,
+        PASSWORD,
+        FOLLOWERCOUNT)
+        VALUES (1, 'onerut', 'Utku', 'Oner', 'onerut@itu.edu.tr', 'admin', 0)"""
+        cursor.execute(query)
 
         connection.commit()
     return redirect(url_for('home_page'))
