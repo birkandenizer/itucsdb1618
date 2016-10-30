@@ -40,10 +40,10 @@ def initialize_database():
 
         query = """INSERT INTO COUNTER (N) VALUES (0)"""
         cursor.execute(query)
-        
+
         query = """DROP TABLE IF EXISTS USERS"""
         cursor.execute(query)
-        
+
         query = """CREATE TABLE IF NOT EXISTS USERS (
         USER_ID        INT PRIMARY KEY NOT NULL,
         USERNAME       VARCHAR(50) NOT NULL,
@@ -65,7 +65,7 @@ def initialize_database():
         FOLLOWERCOUNT)
         VALUES (1, 'onerut', 'Utku', 'Oner', 'onerut@itu.edu.tr', 'admin', 0)"""
         cursor.execute(query)
-        
+
         query = """DROP TABLE IF EXISTS CONTACT"""
         cursor.execute(query)
 
@@ -76,10 +76,10 @@ def initialize_database():
         query = """INSERT INTO CONTACT (TICKET_ID,TOPIC,NAME,SURNAME,USER_TEXT,DATE)
         VALUES (10,'LOGIN','BIRKAN','DENIZER','Houston we have a problem',2016)"""
         cursor.execute(query)
-        
+
         query = """DROP TABLE IF EXISTS HYPES"""
         cursor.execute(query)
-        
+
         query = """CREATE TABLE IF NOT EXISTS HYPES (
         HYPE_ID         INT             PRIMARY KEY     NOT NULL,
         USER_ID         INT                             NOT NULL,
@@ -96,6 +96,27 @@ def initialize_database():
         TEXT,
         TOPIC)
         VALUES (152, 15, 2016, 'OMG!! MacBook Pro 2016 was released this week! It is even prettier than my girlfriend :)', 'Technology')"""
+        cursor.execute(query)
+
+        query = """ DROP TABLE IF EXISTS REHYPES """
+        cursor.execute(query)
+
+        query = """ CREATE TABLE IF NOT EXISTS REHYPES(
+        HYPE_ID INTEGER NOT NULL,
+        USER_ID INTEGER NOT NULL,
+        COMMENT VARCHAR(200),
+        DATE DATE NOT NULL,
+        PRIMARY KEY (HYPE_ID, USER_ID)
+        )"""
+        cursor.execute(query)
+
+        query = """INSERT INTO REHYPES(
+        HYPE_ID,
+        USER_ID,
+        COMMENT,
+        DATE)
+        VALUES(152, 1, 'it is really great!', '2016-10-30')
+        """
         cursor.execute(query)
 
         connection.commit()
