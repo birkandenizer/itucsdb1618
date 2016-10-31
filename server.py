@@ -70,11 +70,11 @@ def initialize_database():
         cursor.execute(query)
 
         query = """CREATE TABLE IF NOT EXISTS CONTACT (TICKET_ID INT PRIMARY KEY NOT NULL, TOPIC VARCHAR(20) NOT NULL,
-         NAME VARCHAR(20) NOT NULL, SURNAME VARCHAR(20) NOT NULL, USER_TEXT VARCHAR(200) NOT NULL, DATE INT NOT NULL)"""
+         NAME VARCHAR(20) NOT NULL, SURNAME VARCHAR(20) NOT NULL, USER_TEXT VARCHAR(200) NOT NULL, DATE DATE NOT NULL)"""
         cursor.execute(query)
 
         query = """INSERT INTO CONTACT (TICKET_ID,TOPIC,NAME,SURNAME,USER_TEXT,DATE)
-        VALUES (10,'LOGIN','BIRKAN','DENIZER','Houston we have a problem',2016)"""
+        VALUES (10,'LOGIN','BIRKAN','DENIZER','Houston we have a problem','2016-10-30')"""
         cursor.execute(query)
 
         query = """DROP TABLE IF EXISTS HYPES"""
