@@ -83,7 +83,7 @@ def initialize_database():
         query = """CREATE TABLE IF NOT EXISTS HYPES (
         HYPE_ID         INT             PRIMARY KEY     NOT NULL,
         USER_ID         INT                             NOT NULL,
-        DATE            INT                             NOT NULL,
+        DATE            DATE                            NOT NULL,
         TEXT            VARCHAR(150)                    NOT NULL,
         TOPIC           VARCHAR(20)                     NOT NULL
         )"""
@@ -95,7 +95,7 @@ def initialize_database():
         DATE,
         TEXT,
         TOPIC)
-        VALUES (152, 15, 2016, 'OMG!! MacBook Pro 2016 was released this week! It is even prettier than my girlfriend :)', 'Technology')"""
+        VALUES (152, 15, '2016-10-30', 'OMG!! MacBook Pro 2016 was released this week! It is even prettier than my girlfriend :)', 'Technology')"""
         cursor.execute(query)
 
         query = """ DROP TABLE IF EXISTS REHYPES """
