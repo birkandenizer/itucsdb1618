@@ -171,6 +171,44 @@ def add_user():
 
     return redirect(url_for('home_page'))
 
+@app.route('/updateUser', methods=['POST'])
+def update_user():
+    pick = request.form['pick']
+    username = request.form['username']
+    name = request.form['name']
+    surname = request.form['surname']
+    email = request.form['email']
+    password = request.form['password']
+    with dbapi2.connect(app.config['dsn']) as connection:
+        cursor = connection.cursor()
+        query = "SELECT USER_ID FROM USERS WHERE USERNAME = '" + pick + "'"
+        cursor.execute(query)
+        tmp = cursor.fetchone()
+        if tmp is not None:
+            query = """UPDATE USERS
+            SET USERNAME = '"""+ username +"""', NAME = '"""+ name +"""',
+            SURNAME = '"""+ surname +"""', EMAIL = '"""+ email +"""',
+            PASSWORD = '"""+ password +"""'
+            WHERE USERNAME = '""" + pick +"""'"""
+            cursor.execute(query)
+    return redirect(url_for('user_management_page'))
+
+@app.route('/deleteUser', methods=['POST'])
+def delete_user():
+    pick = request.form['pick']
+    with dbapi2.connect(app.config['dsn']) as connection:
+        cursor = connection.cursor()
+        query = "SELECT USER_ID FROM USERS WHERE USERNAME = '" + pick + "'"
+        cursor.execute(query)
+        tmp = cursor.fetchone()
+        if tmp is not None:
+            query = "DELETE FROM USERS WHERE USERNAME = '" + pick + "'"
+            cursor.execute(query)
+    return redirect(url_for('user_management_page'))
+
+@app.route('/userManagement')
+def user_management_page():
+    return render_template('users.html')
 @app.route('/news')
 def news_page():
     return render_template('news.html')
