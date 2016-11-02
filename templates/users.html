@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+{% block title %}Login / Sign up{% endblock %}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Signin | Hyper</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" />
+
+    <!-- Custom styles for this template -->
+    <link href="{{url_for('static', filename='signin.css')}}" rel="stylesheet" />
+
+  </head>
+
+  <body>
+
+    <div class="container">
+
+    <div class="row">
+		<div class="col-sm-6">
+			<form class="form-signup" action="/updateUser" method=post>
+			<h2 class="form-signup-heading">Enter the username of the account you want to update</h2>
+			<label for="pick" class="sr-only">Desired account username</label>
+			<input type="text" name=pick id="pick" class="form-control" placeholder="Desired account username" required autofocus>
+			<label for="username" class="sr-only">Username</label>
+			<input type="text" name=username id="username" class="form-control" placeholder="Username" required autofocus>
+			<label for="name" class="sr-only">Name</label>
+			<input type="text" name=name id="name" class="form-control" placeholder="Name" required autofocus>
+			<label for="surname" class="sr-only">Surname</label>
+			<input type="text" name=surname id="surname" class="form-control" placeholder="Surname" required autofocus>
+			<label for="email" class="sr-only">Email</label>
+			<input type="email" name=email id="email" class="form-control" placeholder="Email adress" required autofocus>
+			<label for="password" class="sr-only">Password</label>
+			<input type="password" name=password id="password" class="form-control" placeholder="Password" required>
+			<button class="btn btn-lg btn-primary btn-block" type="submit">Update</button>
+			</form>
+		<br></div>
+		<div class="col-sm-6">
+			<form class="form-signup" action="/deleteUser" method=post>
+			<h2 class="form-signup-heading">Enter the username of the account you want to delete</h2>
+			<label for="pick" class="sr-only">Desired account username</label>
+			<input type="text" name=pick id="pick" class="form-control" placeholder="Desired account username" required autofocus>
+			<button class="btn btn-lg btn-primary btn-block" type="submit">Delete</button>
+			</form>
+		<br></div>
+	</div>
+	<div class="row">
+		<div class="col-sm-12">
+			
+		</div>
+	</div>
+    </div> <!-- /container -->
+  </body>
+</html>
+{% endblock %}
