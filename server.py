@@ -41,9 +41,6 @@ def initialize_database():
         query = """INSERT INTO COUNTER (N) VALUES (0)"""
         cursor.execute(query)
 
-        query = """DROP TABLE IF EXISTS USERS"""
-        cursor.execute(query)
-
         query = """CREATE TABLE IF NOT EXISTS USERS (
         USER_ID        INT PRIMARY KEY NOT NULL,
         USERNAME       VARCHAR(50) NOT NULL,
@@ -53,17 +50,6 @@ def initialize_database():
         PASSWORD       VARCHAR(25) NOT NULL,
         FOLLOWERCOUNT  INT
         )"""
-        cursor.execute(query)
-
-        query = """INSERT INTO USERS (
-        USER_ID,
-        USERNAME,
-        NAME,
-        SURNAME,
-        EMAIL,
-        PASSWORD,
-        FOLLOWERCOUNT)
-        VALUES (1, 'onerut', 'Utku', 'Oner', 'onerut@itu.edu.tr', 'admin', 0)"""
         cursor.execute(query)
 
         query = """DROP TABLE IF EXISTS CONTACT"""
@@ -147,6 +133,42 @@ def counter_page():
         cursor.execute(query)
         count = cursor.fetchone()[0]
     return "This page was accessed %d times." % count
+
+@app.route('/addUser', methods=['POST'])
+def add_user():
+    with dbapi2.connect(app.config['dsn']) as connection:
+        cursor = connection.cursor()
+        query = "SELECT USER_ID FROM USERS ORDER BY USER_ID DESC LIMIT 1"
+        cursor.execute(query)
+        userid = cursor.fetchone()
+        if userid is None:
+            userid = 1
+        else:
+            userid = userid[0]
+            userid = userid + 1
+
+    username = request.form['username']
+    name = request.form['name']
+    surname = request.form['surname']
+    email = request.form['email']
+    password = request.form['password']
+    #retype = request.form('retype')
+
+    with dbapi2.connect(app.config['dsn']) as connection:
+        cursor = connection.cursor()
+
+        query = """INSERT INTO USERS (
+        USER_ID,
+        USERNAME,
+        NAME,
+        SURNAME,
+        EMAIL,
+        PASSWORD,
+        FOLLOWERCOUNT)
+        VALUES ("""+ str(userid)  +""", '"""+ username  +"""', '"""+ name +"""', '"""+ surname +"""', '"""+ email +"""', '"""+ password +"""', 0)"""
+        cursor.execute(query)
+
+    return redirect(url_for('home_page'))
 
 @app.route('/news')
 def news_page():
