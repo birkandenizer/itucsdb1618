@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+	<div class="container">
+
+		<div class="row">
+			<div class="col-sm-10">
+				<div class="page-header">
+	        		<h1>Rehypes</h1>
+	        		<a href="{{ url_for('music_page') }}">Return Music Page</a>
+				</div>
+			</div>
+		</div>
+		{% for hype_id, user_id, comment, date in rehypespage %}
+      	<div class="row">
+	        <div class="col-sm-12">
+	          <div class="panel panel-default">
+	            <div class="panel-heading">
+	              <h3 class="panel-title">Username: {{ user_id }} </h3>
+	            </div>
+	            <div class="panel-body">
+	              <p>{{ hype_id }}</p>
+	              <p>{{ comment }}</p>
+	              <p>{{ date }}</p>
+	            </div>
+	            <div class="panel-body">
+	              <form role="form" action="/rehypes" method="post" name="rehype_edit" class="form-horizontal">
+					<div class="form-group">
+						<label for="comment" class="control-label col-sm-2">Comment:</label>
+						<div class="col-sm-10">
+							<input type="text" name="comment" required autofocus/>
+						</div>
+						<div class="col-sm-10">
+							<input type="hidden" name="hype_id" required autofocus value="{{hype_id}}"/>
+						</div>
+						<div class="col-sm-offset-2 col-sm-10">
+							<button type="submit" name="save" class="btn btn-primary">Add Comment</button>
+						</div>
+					</div>
+				  </form>
+	              <a href="{{ url_for('music_page_delete', user_id=user_id) }}">Unrehype</a>
+	            </div>
+	          </div>
+	        </div>
+		</div>
+		{% endfor %}
+	</div>
+
+{% endblock %}
