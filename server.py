@@ -9,10 +9,14 @@ from flask import request
 from flask import redirect
 from flask import render_template
 from flask.helpers import url_for
+
 from rehype import Rehype
+from contact import contact
+from contacts import store_contact
 
 app = Flask(__name__)
 app.rehype=Rehype(app)
+app.store_contact = store_contact(app)
 
 def get_elephantsql_dsn(vcap_services):
     """Returns the data source name for ElephantSQL."""
@@ -54,15 +58,14 @@ def initialize_database():
         )"""
         cursor.execute(query)
 
-        query = """DROP TABLE IF EXISTS CONTACT"""
-        cursor.execute(query)
-
-        query = """CREATE TABLE IF NOT EXISTS CONTACT (TICKET_ID INT PRIMARY KEY NOT NULL, TOPIC VARCHAR(20) NOT NULL,
-         NAME VARCHAR(20) NOT NULL, SURNAME VARCHAR(20) NOT NULL, USER_TEXT VARCHAR(200) NOT NULL, DATE DATE NOT NULL)"""
-        cursor.execute(query)
-
-        query = """INSERT INTO CONTACT (TICKET_ID,TOPIC,NAME,SURNAME,USER_TEXT,DATE)
-        VALUES (10,'LOGIN','BIRKAN','DENIZER','Houston we have a problem','2016-10-30')"""
+        query = """CREATE TABLE IF NOT EXISTS CONTACT (
+        SUBJECT     VARCHAR(20) NOT NULL,
+        NAME        VARCHAR(20) NOT NULL,
+        SURNAME     VARCHAR(20) NOT NULL,
+        EMAIL       VARCHAR(30) NOT NULL,
+        MESSAGE   VARCHAR(200) NOT NULL,
+        TICKET_ID    INT PRIMARY KEY NOT NULL
+        )"""
         cursor.execute(query)
 
         query = """DROP TABLE IF EXISTS HYPES"""
@@ -271,6 +274,78 @@ def login_page():
 @app.route('/contact')
 def contact_page():
     return render_template('contact.html')
+@app.route('/contacts')
+def contacts_page():
+    return render_template('contacts.html', contacts = app.store_contact.select_contact())
+
+@app.route('/contact/add',methods=['POST'])
+def contact_add_page():
+    subject = request.form['subject']
+    name = request.form['name']
+    surname = request.form['surname']
+    email = request.form['email']
+    message = request.form['message']
+    ticket_id = request.form['ticket_id']
+    with dbapi2.connect(app.config['dsn']) as connection:
+        try:
+            cursor = connection.cursor()
+            query = """INSERT INTO CONTACT (SUBJECT,NAME,SURNAME,EMAIL,MESSAGE,TICKET_ID)
+            VALUES ('"""+ subject  +"""', '"""+ name  +"""', '"""+ surname +"""', '"""+ email +"""', '"""+ message +"""','"""+ ticket_id +"""')"""
+            cursor.execute(query)
+        except dbapi2.DatabaseError:
+                connection.rollback()
+        finally:
+               connection.commit()
+    return redirect(url_for('home_page'))
+
+
+@app.route('/contact/update/<ticket_id>', methods=['GET', 'POST'])
+def contact_update_page(ticket_id):
+    if request.method == 'GET':
+        return render_template('contact_update.html', contact = app.store_contact.get_contact(ticket_id))
+    else:
+        subject = request.form['subject']
+        name = request.form['name']
+        surname = request.form['surname']
+        email = request.form['email']
+        message = request.form['message']
+        ticket_id = request.form['ticket_id']
+
+        with dbapi2.connect(app.config['dsn']) as connection:
+            try:
+                cursor = connection.cursor()
+                query = """UPDATE CONTACT
+                 SET SUBJECT = '"""+ subject +"""', NAME = '"""+ name +"""',
+                 SURNAME = '"""+ surname +"""', EMAIL = '"""+ email +"""',
+                 MESSAGE = '"""+ message +"""'
+                 WHERE TICKET_ID = '""" + ticket_id +"""'"""
+                cursor.execute(query, (subject, name, surname, email, message, ticket_id))
+                connection.commit()
+                cursor.close()
+            except dbapi2.DatabaseError:
+                connection.rollback()
+            finally:
+               connection.commit()
+        return redirect(url_for('contacts_page'))
+
+@app.route('/contact/delete/<ticket_id>', methods=['GET', 'POST'])
+def contact_delete_page(ticket_id):
+    if request.method == 'GET':
+        return render_template('contact_delete.html', contact = app.store_contact.delete_contact(ticket_id))
+    else:
+        ticket_id = request.form['ticket_id']
+
+        with dbapi2.connect(app.config['dsn']) as connection:
+            try:
+                cursor = connection.cursor()
+                query = """ DELETE FROM CONTACT WHERE ticket_id = %s """
+                cursor.execute(query, [ticket_id])
+                connection.commit()
+            except dbapi2.DatabaseError:
+                connection.rollback()
+            finally:
+               connection.commit()
+        return redirect(url_for('contacts_page'))
 @app.route('/about')
 def about_page():
     return render_template('about.html')

@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block title %}Contact Us{% endblock %}
+{% block content %}
+
+<div class="jumbotron">
+        <h1>All entries under Contact Us</h1>
+
+
+
+		<table class="table table-bordered table-striped">
+			<tr>
+			<th class="col-sm-1"> Subject </th>
+			<th class="col-sm-1"> Name </th>
+			<th class="col-sm-1"> Surname </th>
+			<th class="col-sm-1"> Email </th>
+			<th class="col-sm-5"> Message </th>
+			<th class="col-sm-1"> Ticket ID </th>
+			<th class="col-sm-3"> Update / Delete</th>
+			</tr>
+
+
+			{% for subject, name, surname, email, message, ticket_id in contacts %}
+			<tr>
+			<td> {{ subject }}</td>
+			<td> {{ name }} </td>
+			<td> {{ surname }} </td>
+			<td> {{ email }} </td>
+			<td> {{ message }} </td>
+			<td> {{ ticket_id }} </td>
+			<td> <a href="contact/update/{{ ticket_id }}" style="text-decoration:none;" class="btn btn-danger btn-sm" role="button"> <span class="glyphicon glyphicon-wrench"></span> Update </a>
+				 <a href="contact/delete/{{ ticket_id }}" style="text-decoration:none;" class="btn btn-danger btn-sm" role="button"> <span class="glyphicon glyphicon-remove"></span> Delete </a>
+			</td>
+			</tr>
+			{% endfor %}
+		</table>
+{% endblock %}
