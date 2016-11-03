@@ -45,7 +45,7 @@
 					<label for="update_hype_text" class="sr-only">Hype Text</label>
 					<input type="text" name=update_hype_text id="update_hype_text" class="form-control" placeholder="Hype Text" required autofocus>
 					<button class="btn btn-lg btn-primary btn-block" type="submit">Edit!</button>
-      			</form>
+      				</form>
 			</div>
 			<div class="col-sm-4">
   				<form class="form-signin" action="/deleteHype" method=post>
@@ -53,7 +53,30 @@
 					<label for="delete_hype_id" class="sr-only">Hype ID</label>
 					<input type="text" name=delete_hype_id id="delete_hype_id" class="form-control" placeholder="Hype ID" required autofocus>
 					<button class="btn btn-lg btn-primary btn-block" type="submit">Delete...</button>
-      			</form>
+      				</form>
+			</div>
+		</div>
+	    	<div class="row">
+			<div class="col-sm-12">
+				<h1>Selected Hypes from the Database</h1>
+				<table class="table table-bordered table-striped">
+					<tr>
+					<th class="col-sm-2"> Hype ID </th>
+					<th class="col-sm-2"> User ID </th>
+					<th class="col-sm-2"> Date </th>
+					<th class="col-sm-4"> Text </th>
+					<th class="col-sm-2"> Topic </th>
+					</tr>
+					{% for hype_id, user_id, date, text, topic in hypes %}
+					<tr>
+					<td> {{ hype_id }}</td>
+					<td> {{ user_id }} </td>
+					<td> {{ date }} </td>
+					<td> {{ text }} </td>
+					<td> {{ topic }} </td>
+					</tr>
+					{% endfor %}
+				</table>
 			</div>
 		</div>
     </div> <!-- /container -->
