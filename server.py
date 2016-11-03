@@ -9,9 +9,10 @@ from flask import request
 from flask import redirect
 from flask import render_template
 from flask.helpers import url_for
-
+from rehype import Rehype
 
 app = Flask(__name__)
+app.rehype=Rehype(app)
 
 def get_elephantsql_dsn(vcap_services):
     """Returns the data source name for ElephantSQL."""
@@ -106,6 +107,46 @@ def initialize_database():
         """
         cursor.execute(query)
 
+        query = """INSERT INTO USERS (
+        USER_ID,
+        USERNAME,
+        NAME,
+        SURNAME,
+        EMAIL,
+        PASSWORD,
+        FOLLOWERCOUNT)
+        VALUES (2, 'cumaliaba', 'Cumali', 'ABALIK', 'abalik@itu.edu.tr', 'ttnet', 0)"""
+        cursor.execute(query)
+
+        query = """INSERT INTO USERS (
+        USER_ID,
+        USERNAME,
+        NAME,
+        SURNAME,
+        EMAIL,
+        PASSWORD,
+        FOLLOWERCOUNT)
+        VALUES (3, 'unalbo', 'Bora', 'UNAL', 'unalbo@itu.edu.tr', 'besiktas', 0)"""
+        cursor.execute(query)
+
+        query = """INSERT INTO HYPES (
+        HYPE_ID,
+        USER_ID,
+        DATE,
+        TEXT,
+        TOPIC)
+        VALUES (92, 2, '2016-10-31', 'OMG!! MacBook Pro 2016 was released this week! It is even prettier than my girlfriend :)', 'Music')"""
+        cursor.execute(query)
+
+        query = """INSERT INTO HYPES (
+        HYPE_ID,
+        USER_ID,
+        DATE,
+        TEXT,
+        TOPIC)
+        VALUES (67, 3, '2016-10-31', 'OMG!! MacBook Pro 2016 was released this week! It is even prettier than my girlfriend :)', 'Music')"""
+        cursor.execute(query)
+
         query = """ DROP TABLE IF EXISTS FOLLOWER """
         cursor.execute(query)
 
@@ -117,7 +158,7 @@ def initialize_database():
 
         query = """INSERT INTO FOLLOWER(PERSON_ID, FOLLOWER_ID, DATE) VALUES (1, 2, '2016-10-31')"""
         cursor.execute(query)
-        
+
         connection.commit()
     return redirect(url_for('home_page'))
 
@@ -218,9 +259,31 @@ def sport_page():
 @app.route('/technology')
 def technology_page():
     return render_template('technology.html')
+
 @app.route('/music')
 def music_page():
-    return render_template('music.html')
+    return render_template('music.html', hypespage = app.rehype.List_Hypes())
+
+@app.route('/rehypes', methods=['GET', 'POST'])
+def rehypes_page():
+    if request.method == 'GET':
+        return render_template('rehypes.html', rehypespage = app.rehype.List_Rehypes())
+    else:
+        comment = request.form['comment']
+        hype_id = request.form['hype_id']
+        app.rehype.Update_Rehype(hype_id, comment)
+        return render_template('rehypes.html', rehypespage = app.rehype.List_Rehypes())
+
+@app.route('/music/add/<user_id>/<hype_id>')
+def music_page_add(user_id, hype_id):
+    app.rehype.Add_Rehype(user_id, hype_id)
+    return render_template('rehypes.html', rehypespage = app.rehype.List_Rehypes())
+
+@app.route('/music/delete/<user_id>')
+def music_page_delete(user_id):
+    app.rehype.Delete_Rehype(user_id)
+    return render_template('rehypes.html', rehypespage = app.rehype.List_Rehypes())
+
 @app.route('/events')
 def events_page():
     return render_template('events.html')
