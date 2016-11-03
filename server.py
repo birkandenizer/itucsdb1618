@@ -107,28 +107,6 @@ def initialize_database():
         """
         cursor.execute(query)
 
-        query = """INSERT INTO USERS (
-        USER_ID,
-        USERNAME,
-        NAME,
-        SURNAME,
-        EMAIL,
-        PASSWORD,
-        FOLLOWERCOUNT)
-        VALUES (2, 'cumaliaba', 'Cumali', 'ABALIK', 'abalik@itu.edu.tr', 'ttnet', 0)"""
-        cursor.execute(query)
-
-        query = """INSERT INTO USERS (
-        USER_ID,
-        USERNAME,
-        NAME,
-        SURNAME,
-        EMAIL,
-        PASSWORD,
-        FOLLOWERCOUNT)
-        VALUES (3, 'unalbo', 'Bora', 'UNAL', 'unalbo@itu.edu.tr', 'besiktas', 0)"""
-        cursor.execute(query)
-
         query = """INSERT INTO HYPES (
         HYPE_ID,
         USER_ID,
