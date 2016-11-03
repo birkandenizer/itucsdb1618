@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+{% block title %}Let's Hype!{% endblock %}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Let's Hype!</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" />
+
+    <!-- Custom styles for this template -->
+    <link href="{{url_for('static', filename='signin.css')}}" rel="stylesheet" />
+  </head>
+
+  <body>
+    <div class="container">
+		<div class="row">
+			<div class="col-sm-4">
+				<form class="form-signup" action="/addHype" method=post>
+					<h2 class="form-signup-heading">Wanna Hype??</h2>
+					<label for="user_id" class="sr-only">User ID</label>
+					<input type="text" name=user_id id="user_id" class="form-control" placeholder="User ID" required autofocus>
+					<label for="hype_text" class="sr-only">Hype Text</label>
+					<input type="text" name=hype_text id="hype_text" class="form-control" placeholder="Text" required autofocus>
+					<label for="topic" class="sr-only">Topic</label>
+					<input type="text" name=topic id="topic" class="form-control" placeholder="Topic" required autofocus>
+					<button class="btn btn-lg btn-primary btn-block" type="submit">HYPE</button>
+				</form>
+			</div>
+			<div class="col-sm-4">
+  				<form class="form-signin" action="/editHype" method=post>
+					<h2 class="form-signin-heading">Edit Info</h2>
+					<label for="update_hype_id" class="sr-only">Hype ID</label>
+					<input type="text" name=update_hype_id id="update_hype_id" class="form-control" placeholder="Hype ID" required autofocus>
+					<label for="update_hype_text" class="sr-only">Hype Text</label>
+					<input type="text" name=update_hype_text id="update_hype_text" class="form-control" placeholder="Hype Text" required autofocus>
+					<button class="btn btn-lg btn-primary btn-block" type="submit">Edit!</button>
+      			</form>
+			</div>
+			<div class="col-sm-4">
+  				<form class="form-signin" action="/deleteHype" method=post>
+					<h2 class="form-signin-heading">Delete Hype</h2>
+					<label for="delete_hype_id" class="sr-only">Hype ID</label>
+					<input type="text" name=delete_hype_id id="delete_hype_id" class="form-control" placeholder="Hype ID" required autofocus>
+					<button class="btn btn-lg btn-primary btn-block" type="submit">Delete...</button>
+      			</form>
+			</div>
+		</div>
+    </div> <!-- /container -->
+  </body>
+</html>
+{% endblock %}
