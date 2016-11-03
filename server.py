@@ -256,7 +256,18 @@ def delete_user():
 
 @app.route('/userManagement')
 def user_management_page():
-    return render_template('users.html')
+    with dbapi2.connect(app.config['dsn']) as connection:
+        try:
+            cursor = connection.cursor()
+            query = """ SELECT * FROM USERS ORDER BY USER_ID"""
+            cursor.execute(query)
+            users = cursor.fetchall()
+        except dbapi2.DatabaseError:
+            connection.rollback()
+        finally:
+            connection.commit()
+    return render_template('users.html', users = users)
+
 @app.route('/news')
 def news_page():
     return render_template('news.html')
