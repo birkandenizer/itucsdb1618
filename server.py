@@ -402,6 +402,61 @@ def contact_delete_page(ticket_id):
 def about_page():
     return render_template('about.html')
 
+@app.route('/hype')
+def hype_page():
+    return render_template('hype.html')
+
+@app.route('/addHype', methods=['POST'])
+def hype():
+    with dbapi2.connect(app.config['dsn']) as connection:
+        cursor = connection.cursor()
+        query = "SELECT HYPE_ID FROM HYPES ORDER BY HYPE_ID DESC LIMIT 1"
+        cursor.execute(query)
+        hype_id = cursor.fetchone()
+        if hype_id is None:
+            hype_id = 1
+        else:
+            hype_id = hype_id[0]
+            hype_id = hype_id + 1
+
+    user_id = request.form['user_id']
+    t = datetime.date.today()
+    text = request.form['hype_text']
+    topic = request.form['topic']
+
+    with dbapi2.connect(app.config['dsn']) as connection:
+        cursor = connection.cursor()
+
+        query = """INSERT INTO HYPES(
+        HYPE_ID,
+        USER_ID,
+        DATE,
+        TEXT,
+        TOPIC)
+        VALUES("""+ str(hype_id) +", "+ str(user_id) +",'" + str(t) +"','"+ text +"','"+ topic +"' )"
+        cursor.execute(query)
+        
+    return redirect(url_for('hype_page'))
+
+@app.route('/editHype', methods=['POST'])
+def edit_hype():
+    with dbapi2.connect(app.config['dsn']) as connection:
+        hype_id = request.form['update_hype_id']
+        text = request.form['update_hype_text']
+        cursor = connection.cursor()
+        query = "UPDATE HYPES SET TEXT = '"+ text +"' WHERE HYPE_ID =" + str(hype_id)
+        cursor.execute(query)
+        
+    return redirect(url_for('hype_page'))
+
+@app.route('/deleteHype', methods=['POST'])
+def delete_hype():
+    with dbapi2.connect(app.config['dsn']) as connection:
+        hype_id = request.form['delete_hype_id']
+        cursor = connection.cursor()
+        query = "DELETE FROM HYPES WHERE HYPE_ID =" + str(hype_id)
+        cursor.execute(query)
+    return redirect(url_for('hype_page'))
 
 if __name__ == '__main__':
     VCAP_APP_PORT = os.getenv('VCAP_APP_PORT')
