@@ -469,6 +469,16 @@ def delete_hype():
         cursor.execute(query)
     return redirect(url_for('hype_page'))
 
+@app.route('/selectHype', methods=['POST'])
+def select_hype():
+    with dbapi2.connect(app.config['dsn']) as connection:
+        hype_id = request.form['select_hype_id']
+        cursor = connection.cursor()
+        query = "SELECT * FROM HYPES WHERE HYPE_ID =" + str(hype_id)
+        cursor.execute(query)
+        selectedHype = cursor.fetchall()
+    return render_template('hype.html', hypes = selectedHype)
+
 if __name__ == '__main__':
     VCAP_APP_PORT = os.getenv('VCAP_APP_PORT')
     if VCAP_APP_PORT is not None:
