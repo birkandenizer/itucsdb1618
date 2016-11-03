@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+{% block title %}FOLLOWING TABLE{% endblock %}
+{% block content %}
+
+<div class="jumbotron">
+        <h2>FOLLOWERS TABLE</h2>
+
+
+
+		<table class="table table-bordered table-striped">
+			<tr>
+			<th class="col-sm-2"> USER_ID_FOLLOWING </th>
+			<th class="col-sm-2"> USER_ID_FOLLOWED </th>
+			<th class="col-sm-2"> GROUP </th>
+			<th class="col-sm-2"> DATE </th>
+			<th class="col-sm-2"> UPDATE GROUP NAME </th>
+			</tr>
+
+
+			{% for person_id, follower_id, group, date in sportpage2 %}
+			<tr>
+			<td> {{ person_id }}</td>
+			<td> {{ follower_id }} </td>
+			<td> {{ group }} </td>
+			<td> {{ date }} </td>
+			<td> <form role="form" action="/sport" method="post" name="group_edit" class="form-horizontal">
+					<div class="form-group">
+						<label for="group_name" class="control-label col-sm-0"></label>
+						<div class="col-sm-10"> <input type="text" name="group_name" requeired autofocus></input> </div>
+						<div class="col-sm-10">
+							<input type="hidden" name="person_id" required autofocus value="{{person_id}}"/>
+						</div>
+						<div class="col-sm-10">
+							<input type="hidden" name="follower_id" required autofocus value="{{follower_id}}"/>
+						</div>
+						<div class="col-sm-offset-1 col-sm-12">
+							<button type="submit" name="save" class="btn btn-primary">Update Group</button>
+						</div>
+					</div>
+		 </form></td>
+			</tr>
+
+
+
+
+
+			{% endfor %}
+		</table>
+
+		<a href="{{ url_for('sport_page')}}" button type="button" class="btn btn-primary btn-lg btn-block">Back to Sport Page</a></button>
+
+
+
+
+
+
+
+{% endblock %}

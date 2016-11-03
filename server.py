@@ -13,10 +13,12 @@ from flask.helpers import url_for
 from rehype import Rehype
 from contact import contact
 from contacts import store_contact
+from followers import followers
 
 app = Flask(__name__)
 app.rehype=Rehype(app)
 app.store_contact = store_contact(app)
+app.followers = followers(app)
 
 def get_elephantsql_dsn(vcap_services):
     """Returns the data source name for ElephantSQL."""
@@ -128,19 +130,43 @@ def initialize_database():
         VALUES (67, 3, '2016-10-31', 'OMG!! MacBook Pro 2016 was released this week! It is even prettier than my girlfriend :)', 'Music')"""
         cursor.execute(query)
 
+        query = """INSERT INTO HYPES (
+        HYPE_ID,
+        USER_ID,
+        DATE,
+        TEXT,
+        TOPIC)
+        VALUES (102, 15, '2016-11-02', 'Besiktas 1 - 1 Napoli, oleeeey' , 'Sport')"""
+        cursor.execute(query)
+
+        query = """INSERT INTO HYPES (
+        HYPE_ID,
+        USER_ID,
+        DATE,
+        TEXT,
+        TOPIC)
+        VALUES (122, 14, '2016-11-03', 'Manchester City 3 - 1 Barcelona. Poor you Messi!' , 'Sport')"""
+        cursor.execute(query)
+
+
         query = """ DROP TABLE IF EXISTS FOLLOWER """
         cursor.execute(query)
 
         query = """ CREATE TABLE IF NOT EXISTS FOLLOWER(
         PERSON_ID INTEGER NOT NULL,
         FOLLOWER_ID INTEGER NOT NULL,
-        DATE DATE NOT NULL )"""
+        GROUP_NAME VARCHAR(50),
+        DATE DATE NOT NULL,
+        PRIMARY KEY(PERSON_ID,FOLLOWER_ID)
+        )"""
         cursor.execute(query)
 
-        query = """INSERT INTO FOLLOWER(PERSON_ID, FOLLOWER_ID, DATE) VALUES (1, 2, '2016-10-31')"""
+        query = """INSERT INTO FOLLOWER(PERSON_ID, FOLLOWER_ID, GROUP_NAME, DATE) VALUES (1, 2, 'Family' , '2016-10-31')"""
         cursor.execute(query)
+
 
         connection.commit()
+
     return redirect(url_for('home_page'))
 
 @app.route('/count')
@@ -234,9 +260,35 @@ def user_management_page():
 @app.route('/news')
 def news_page():
     return render_template('news.html')
-@app.route('/sport')
+
+
+@app.route('/sport', methods=['GET', 'POST'])
 def sport_page():
-    return render_template('sport.html')
+    if request.method == 'GET':
+        return render_template('sport.html' , sportpage = app.followers.select_followers())
+    else:
+        person_id = request.form['person_id']
+        follower_id = request.form['follower_id']
+        group_name = request.form['group_name']
+        app.followers.update_group(person_id, follower_id, group_name)
+        return render_template('sport.html' , sportpage = app.followers.select_followers())
+
+
+
+@app.route('/sport/add/<follower_id>')
+def sport_page_add(follower_id):
+    sayi=2
+    app.followers.add_follow(sayi, follower_id)
+    return render_template('show_users_following.html' , sportpage2 = app.followers.show_followers())
+
+@app.route('/sport/delete/<follower_id>')
+def sport_page_delete(follower_id):
+    app.followers.delete_follow(follower_id)
+    return render_template('show_users_following.html' , sportpage2 = app.followers.show_followers())
+
+
+
+
 @app.route('/technology')
 def technology_page():
     return render_template('technology.html')
