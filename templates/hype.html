@@ -45,7 +45,7 @@
 					<label for="update_hype_text" class="sr-only">Hype Text</label>
 					<input type="text" name=update_hype_text id="update_hype_text" class="form-control" placeholder="Hype Text" required autofocus>
 					<button class="btn btn-lg btn-primary btn-block" type="submit">Edit!</button>
-      				</form>
+      			</form>
 			</div>
 			<div class="col-sm-4">
   				<form class="form-signin" action="/deleteHype" method=post>
@@ -53,10 +53,16 @@
 					<label for="delete_hype_id" class="sr-only">Hype ID</label>
 					<input type="text" name=delete_hype_id id="delete_hype_id" class="form-control" placeholder="Hype ID" required autofocus>
 					<button class="btn btn-lg btn-primary btn-block" type="submit">Delete...</button>
-      				</form>
+      			</form>
+      			<form class="form-signin" action="/selectHype" method=post>
+					<h2 class="form-signin-heading">Select Hype</h2>
+					<label for="select_hype_id" class="sr-only">Hype ID</label>
+					<input type="text" name=select_hype_id id="select_hype_id" class="form-control" placeholder="Hype ID" required autofocus>
+					<button class="btn btn-lg btn-primary btn-block" type="submit">Select</button>
+      			</form>
 			</div>
 		</div>
-	    	<div class="row">
+		<div class="row">
 			<div class="col-sm-12">
 				<h1>Selected Hypes from the Database</h1>
 				<table class="table table-bordered table-striped">
