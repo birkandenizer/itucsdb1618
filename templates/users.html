@@ -57,7 +57,29 @@
 	</div>
 	<div class="row">
 		<div class="col-sm-12">
-			
+			<h1>All Users in the Database</h1>
+			<table class="table table-bordered table-striped">
+				<tr>
+				<th class="col-sm-1"> UserID </th>
+				<th class="col-sm-1"> Username </th>
+				<th class="col-sm-1"> Name </th>
+				<th class="col-sm-1"> Surname </th>
+				<th class="col-sm-3"> Email </th>
+				<th class="col-sm-2"> Password </th>
+				<th class="col-sm-1"> Follower Count </th>
+				</tr>
+				{% for userid, username, name, surname, email, password, followercount in users %}
+				<tr>
+				<td> {{ userid }}</td>
+				<td> {{ username }} </td>
+				<td> {{ name }} </td>
+				<td> {{ surname }} </td>
+				<td> {{ email }} </td>
+				<td> {{ password }} </td>
+				<td> {{ followercount }} </td>
+				</tr>
+				{% endfor %}
+			</table>
 		</div>
 	</div>
     </div> <!-- /container -->
