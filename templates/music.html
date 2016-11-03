@@ -14,50 +14,24 @@
 			<p></p>
 			</div>
 		</div>
+		{% for hype_id, user_id, date, text, topic in hypespage %}
       	<div class="row">
-	        <div class="col-sm-6">
+	        <div class="col-sm-12">
 	          <div class="panel panel-default">
 	            <div class="panel-heading">
-	              <h3 class="panel-title">Watch Robert Plant</h3>
+	              <h3 class="panel-title">Username (will happen soon): {{ user_id }} </h3>
 	            </div>
 	            <div class="panel-body">
-	              <p>Robert Plant returned to Austin City Limits for the first time in 14 years for an hour-long episode that mixed reimagined renditions of Led Zeppelin classics with material from his Sensational Space Shifters. Taken from http://www.rollingstone.com/music</p>
-	            </div>
-	          </div>
-	        </div>
-	        <div class="col-sm-6">
-	          <div class="panel panel-default">
-	            <div class="panel-heading">
-	              <h3 class="panel-title">Roger Waters Talks New Album</h3>
+	              <p>{{ text }}</p>
+	              <p>{{ date }}</p>
 	            </div>
 	            <div class="panel-body">
-					<p>Two days before his spectacular closing set on the first weekend of Desert Trip in Indio, California, Roger Waters is sitting in his backstage trailer already looking past that  to the summer of 2017. Taken from http://www.rollingstone.com/music</p>
-	            </div>
-	          </div>
-	        </div><!-- /.col-sm-6 -->
-		</div>
-		<div class="row">
-	        <div class="col-sm-6">
-	          <div class="panel panel-default">
-	            <div class="panel-heading">
-	              <h3 class="panel-title">See Jack White's Four-Song Set</h3>
-	            </div>
-	            <div class="panel-body">
-	              <p>Saturday night marked Nickel Creek and the Punch Brothers mandolinist Chris Thile's first time hosting A Prairie Home Companion since its creator Garrison Keiller handed him the reins of the weekly variety radio show. For Thile's maiden voyage as full-time host, Jack White visited Lake Wobegon to play a four-song set. Taken from http://www.rollingstone.com/music</p>
-	            </div>
-	          </div>
-	        </div>
-	        <div class="col-sm-6">
-	          <div class="panel panel-default">
-	            <div class="panel-heading">
-	              <h3 class="panel-title">Readers' Poll: 10 Best Bruno Mars Songs</h3>
-	            </div>
-	            <div class="panel-body">
-	              <p>Bruno Mars returned last week with his first solo material since the release of 2012's Unorthodox Jukebox. The upbeat and funky "24K Magic" feels like an extension of his impressive Mark Ronson collaboration "Uptown Funk," which dominated 2014 and 2015, but also continues a trend of his career that has Mars modernizing throwback sounds. The singer is so effective at making the past work in the present that he broke a record in his first two years as recording artist by wracking up four Number One hits, and "24K Magic" could easily become his seventh in six years. With that in mind, we asked our readers to vote for the best Bruno Mars songs. Here are the results. Taken from http://www.rollingstone.com/music</p>
+	              <a href="{{ url_for('music_page_add', user_id=user_id, hype_id=hype_id) }}">Rehype</a>
 	            </div>
 	          </div>
 	        </div>
 		</div>
+		{% endfor %}
 	</div>
 
 {% endblock %}
