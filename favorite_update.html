@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+{% block title %}Favorites Update{% endblock %}
+{% block content %}
+	<div class="container">
+
+		<div class="row">
+			<div class="col-sm-10">
+				<div class="page-header">
+	        		<h1>Favorites</h1>
+				</div>
+			</div>
+		</div>
+		{% for favorite_id, hype_id, user_id, date, rate in favorites %}
+      	<div class="row">
+	        <div class="col-sm-12">
+	          <div class="panel panel-default">
+	            <div class="panel-body">
+	            	<form role="form" action="/favorite/update/<favorite_id>" method="post" name="favorite_add" class="form-horizontal">
+						<div class="form-group">
+							<div class="col-sm-offset-2 col-sm-10">
+								<p>Old Rate : {{ rate }} </p>
+							</div>
+							<div class="col-sm-10">
+								<input type="hidden" name="favorite_id" required autofocus value="{{favorite_id}}"/>
+							</div>
+							<div class="col-sm-10">
+	              				<input type="radio" name="rate" value="5"> 5 <br>
+	              				<input type="radio" name="rate" value="4"> 4 <br>
+	              				<input type="radio" name="rate" value="3"> 3 <br>
+	              				<input type="radio" name="rate" value="2"> 2 <br>
+	              				<input type="radio" name="rate" value="1"> 1 <br>
+	            			</div>
+	            			<div class="col-sm-offset-2 col-sm-10">
+								<button type="submit" name="save" class="btn btn-primary">Vote</button>
+							</div>
+	          			</div>
+	          		</form>
+	        	</div>
+			  </div>
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+
+{% endblock %}
