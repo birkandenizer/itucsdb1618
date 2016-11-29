@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+	<div class="container">
+
+		<div class="row">
+			<div class="col-sm-10">
+				<div class="page-header">
+	        		<h1>Rehypes</h1>
+	        		<a href="{{ url_for('music_page') }}">Return Music Page</a>
+				</div>
+			</div>
+		</div>
+		{% for hype_id, user_id, comment, date in rehypespage %}
+      	<div class="row">
+	        <div class="col-sm-12">
+	          <div class="panel panel-default">
+	            <div class="panel-heading">
+	            {% for user2_id, username, name, surname, email, password, count in rehypesUser %}
+	            	{% if user_id == user2_id %}
+	              		<h3 class="panel-title"> Username : {{ username }}</h3>
+	              	{% endif %}
+	            {% endfor %}
+	            </div>
+	            <div class="panel-body">
+	              <p>Comment : {{ comment }}</p>
+	              <p>Date : {{ date }}</p>
+	            </div>
+	        	<a href="{{ url_for('music_page_delete', user_id=user_id) }}">Unrehype</a>
+	          </div>
+	        </div>
+		</div>
+		{% endfor %}
+	</div>
+
+{% endblock %}
