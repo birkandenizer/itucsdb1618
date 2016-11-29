@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+	<div class="container">
+
+		<div class="row">
+			<div class="col-sm-10">
+				<div class="page-header">
+	        		<h1>Rehypes</h1>
+	        		<a href="{{ url_for('music_page') }}">Return Music Page</a>
+				</div>
+			</div>
+		</div>
+		{% for hype_id, user_id, comment, date in rehypespage %}
+			{% if comment == "Please write your comment to this rehype!" %}
+	      	<div class="row">
+		        <div class="col-sm-12">
+		          <div class="panel panel-default">
+		            <div class="panel-body">
+		              <p>Comment : {{ comment }}</p>
+		              <p>Date : {{ date }}</p>
+		            </div>
+		            <div class="panel-body">
+		              <form role="form" action="/rehypes" method="post" name="rehype_edit" class="form-horizontal">
+						<div class="form-group">
+							<label for="comment" class="control-label col-sm-2">Comment:</label>
+							<div class="col-sm-10">
+								<input type="text" name="comment" required autofocus/>
+							</div>
+							<div class="col-sm-10">
+								<input type="hidden" name="old_user_id" required autofocus value="{{user_id}}"/>
+							</div>
+							<div class="col-sm-10">
+								<input type="hidden" name="hype_id" required autofocus value="{{hype_id}}"/>
+							</div>
+							<div class="col-sm-10">
+								<p>Who are you?</p>
+								{% for user3_id, username, name, surname, email, password, count in rehypesUser %}
+									<input type="radio" name="user_ids" value="{{user3_id}}"> {{username}}<br>
+								{% endfor %}
+
+							</div>
+							<div class="col-sm-offset-2 col-sm-10">
+								<button type="submit" name="save" class="btn btn-primary">Add Comment</button>
+							</div>
+						</div>
+					  </form>
+		              <a href="{{ url_for('music_page_delete', user_id=user_id) }}">Unrehype</a>
+		            </div>
+		          </div>
+		        </div>
+			</div>
+			{% endif %}
+		{% endfor %}
+	</div>
+
+{% endblock %}
