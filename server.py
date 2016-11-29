@@ -87,7 +87,7 @@ def initialize_database():
 
         query = """CREATE TABLE IF NOT EXISTS HYPES (
         HYPE_ID         SERIAL        PRIMARY KEY    NOT NULL,
-        USER_ID         INT                          NOT NULL,
+        USER_ID         INT                          NOT NULL REFERENCES USERS (USER_ID) ON DELETE CASCADE,
         DATE            DATE                         NOT NULL,
         TEXT            VARCHAR(150)                 NOT NULL,
         TOPIC           VARCHAR(20)                  NOT NULL
