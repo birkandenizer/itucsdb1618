@@ -19,19 +19,48 @@
 	        <div class="col-sm-12">
 	          <div class="panel panel-default">
 	            <div class="panel-heading">
-	              <h3 class="panel-title">Username (will happen soon): {{ user_id }} </h3>
+	            {% for user2_id, username, name, surname, email, password, count in hypespageUsername %}
+	            	{% if user_id == user2_id %}
+	              		<h3 class="panel-title"> Username : {{ username }}</h3>
+	              	{% endif %}
+	            {% endfor %}
 	            </div>
 	            <div class="panel-body">
-	              <p>{{ text }}</p>
-	              <p>{{ date }}</p>
+	              <p>Hype : {{ text }}</p>
+	              <p>Date : {{ date }}</p>
 	            </div>
 	            <div class="panel-body">
-	              <a href="{{ url_for('music_page_add', user_id=user_id, hype_id=hype_id) }}">Rehype</a>
+	              <a href="{{ url_for('music_page_add', user_id=user_id, hype_id=hype_id) }}" class="btn btn-default btn-lg active" role="button">Rehype</a>
 	            </div>
+	            <div class="panel-body">
+		              <form role="form" action="/favoriteadd" method="post" name="favorite_add" class="form-horizontal">
+						<div class="form-group">
+							<div class="col-sm-10">
+								<input type="hidden" name="hype_id" required autofocus value="{{hype_id}}"/>
+							</div>
+							<div class="panel-heading">
+								<h2> Favorites Menu </h2>
+							</div>
+							<div class="panel-body">
+								<div class="col-sm-10">
+									<p>Who are you?</p>
+									{% for user3_id, username, name, surname, email, password, count in hypespageUsername %}
+										<input type="radio" name="user3_ids" value="{{user3_id}}"> {{username}}<br>
+									{% endfor %}
+
+								</div>
+							</div>
+							<div class="col-sm-offset-2 col-sm-10">
+								<button type="submit" name="addFav" class="btn btn-primary">Add Favorite</button>
+							</div>
+						</div>
+					  </form>
 	          </div>
 	        </div>
 		</div>
 		{% endfor %}
+		<a href="{{ url_for('rehypes_list') }}">Rehypes List</a><br>
+		<a href="{{ url_for('favorites_select') }}">Favorites List</a>
 	</div>
 
 {% endblock %}
