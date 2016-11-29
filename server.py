@@ -250,7 +250,17 @@ def user_management_page():
 
 @app.route('/roleManagement')
 def roles_page():
-    return render_template('roles.html', roles = app.role.List_Roles())
+    with dbapi2.connect(app.config['dsn']) as connection:
+        try:
+            cursor = connection.cursor()
+            query = """ SELECT USER_ID, USERNAME FROM USERS ORDER BY USER_ID"""
+            cursor.execute(query)
+            users = cursor.fetchall()
+        except dbapi2.DatabaseError:
+            connection.rollback()
+        finally:
+            connection.commit()
+    return render_template('roles.html', roles = app.role.List_Roles(), users=users)
 
 @app.route('/addRole', methods=['POST'])
 def add_role():
@@ -258,7 +268,7 @@ def add_role():
     tag = request.form['tag']
     type = request.form['type']
     app.role.Add_Roles(userid, tag, type)
-    return render_template('roles.html', roles = app.role.List_Roles())
+    return redirect(url_for('roles_page'))
 
 @app.route('/updateRole', methods=['POST'])
 def update_role():
@@ -266,13 +276,13 @@ def update_role():
     tag = request.form['tag']
     type = request.form['type']
     app.role.Update_Roles(id, tag, type)
-    return render_template('roles.html', roles = app.role.List_Roles())
+    return redirect(url_for('roles_page'))
 
 @app.route('/deleteRole', methods=['POST'])
 def delete_role():
     id = request.form['id']
     app.role.Delete_Roles(id)
-    return render_template('roles.html', roles = app.role.List_Roles())
+    return redirect(url_for('roles_page'))
 
 @app.route('/news')
 def news_page():
