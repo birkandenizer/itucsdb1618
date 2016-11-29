@@ -1,0 +1,65 @@
+{% extends "layout.html" %}
+{% block title %}Role Management{% endblock %}
+{% block content %}
+  <body>
+
+    <div class="container">
+
+    <div class="row">
+		<div class="col-sm-4">
+			<form class="form-signup" action="/addRole" method=post>
+			<h2 class="form-signup-heading">Enter the information of the entry you want to add</h2>
+			<label for="userid" class="sr-only">UserID</label>
+			<input type="text" name=userid id="userid" class="form-control" placeholder="UserID" required autofocus>
+			<label for="tag" class="sr-only">Tag</label>
+			<input type="text" name=tag id="tag" class="form-control" placeholder="Tag" required autofocus>
+			<label for="type" class="sr-only">Type</label>
+			<input type="text" name=type id="type" class="form-control" placeholder="Type" required autofocus>
+			<button class="btn btn-lg btn-primary btn-block" type="submit">Add</button>
+			</form>
+		<br></div>
+		<div class="col-sm-4">
+			<form class="form-signup" action="/updateRole" method=post>
+			<h2 class="form-signup-heading">Enter the id of the entry you want to update</h2>
+			<label for="id" class="sr-only">Desired id</label>
+			<input type="text" name=id id="id" class="form-control" placeholder="Desired id" required autofocus>
+			<label for="tag" class="sr-only">Tag</label>
+			<input type="text" name=tag id="tag" class="form-control" placeholder="Tag" required autofocus>
+			<label for="type" class="sr-only">Type</label>
+			<input type="text" name=type id="type" class="form-control" placeholder="Type" required autofocus>
+			<button class="btn btn-lg btn-primary btn-block" type="submit">Update</button>
+			</form>
+		<br></div>
+		<div class="col-sm-4">
+			<form class="form-signup" action="/deleteRole" method=post>
+			<h2 class="form-signup-heading">Enter the id of the entry you want to delete</h2>
+			<label for="id" class="sr-only">Desired id</label>
+			<input type="text" name=id id="id" class="form-control" placeholder="Desired id" required autofocus>
+			<button class="btn btn-lg btn-primary btn-block" type="submit">Delete</button>
+			</form>
+		<br></div>
+	</div>
+	<div class="row">
+		<div class="col-sm-12">
+			<h1>All Roles Table Entries in the Database</h1>
+			<table class="table table-bordered table-striped">
+				<tr>
+				<th class="col-sm-3"> ID </th>
+				<th class="col-sm-3"> UserID </th>
+				<th class="col-sm-3"> Tag </th>
+				<th class="col-sm-3"> Type </th>
+				</tr>
+				{% for id, userid, tag, type in roles %}
+				<tr>
+				<td> {{ id }}</td>
+				<td> {{ userid }} </td>
+				<td> {{ tag }} </td>
+				<td> {{ type }} </td>
+				</tr>
+				{% endfor %}
+			</table>
+		</div>
+	</div>
+    </div>
+  </body>
+{% endblock %}
