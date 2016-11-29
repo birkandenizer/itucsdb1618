@@ -21,14 +21,6 @@ class Rehype:
              rehypespage = cursor.fetchall()
              return rehypespage
 
-    #def Get_Name(self, user_id):
-        #with dbapi2.connect(self.app.config['dsn']) as connection:
-             #cursor = connection.cursor()
-             #query = """ SELECT username FROM USERS WHERE USER_ID = %s """
-             #cursor.execute(query, [user_id])
-             #users = cursor.fetchall()
-             #return users
-
     def Add_Rehype(self, user_id, hype_id):
         with dbapi2.connect(self.app.config['dsn']) as connection:
             try:
@@ -57,16 +49,27 @@ class Rehype:
             finally:
                connection.commit()
 
-    def Update_Rehype(self, hype_id, comment):
+    def Update_Rehype(self, old_user_id, hype_id, comment, user_ids):
         with dbapi2.connect(self.app.config['dsn']) as connection:
             try:
                 date = datetime.date.today()
                 cursor = connection.cursor()
-                query =  """UPDATE REHYPES SET COMMENT = %s WHERE HYPE_ID = %s"""
-                cursor.execute(query, (comment, hype_id))
+                query =  """UPDATE REHYPES
+                             SET COMMENT = %s,
+                             USER_ID = %s
+                             WHERE (USER_ID = %s) AND (HYPE_ID = %s)"""
+                cursor.execute(query, (comment, user_ids, old_user_id, hype_id))
                 connection.commit()
                 cursor.close()
             except dbapi2.DatabaseError:
                 connection.rollback()
             finally:
                connection.commit()
+
+    def List_Users(self):
+        with dbapi2.connect(self.app.config['dsn']) as connection:
+             cursor = connection.cursor()
+             query = """ SELECT * FROM USERS """
+             cursor.execute(query)
+             hypespageUsername = cursor.fetchall()
+             return hypespageUsername
