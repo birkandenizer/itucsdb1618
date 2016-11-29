@@ -141,10 +141,7 @@ def initialize_database():
         PRIMARY KEY(PERSON_ID,FOLLOWER_ID)
         )"""
         cursor.execute(query)
-
-        query = """INSERT INTO FOLLOWER(PERSON_ID, FOLLOWER_ID, GROUP_NAME, DATE) VALUES (1, 2, 'Family' , '2016-10-31')"""
-        cursor.execute(query)
-
+        
         query = """ CREATE TABLE IF NOT EXISTS BLOCKED(
         PERSON_ID INTEGER NOT NULL REFERENCES USERS (USER_ID) ON DELETE CASCADE,
         BLOCK_ID INTEGER NOT NULL REFERENCES USERS (USER_ID) ON DELETE CASCADE,
