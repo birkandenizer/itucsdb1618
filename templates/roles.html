@@ -9,8 +9,11 @@
 		<div class="col-sm-4">
 			<form class="form-signup" action="/addRole" method=post>
 			<h2 class="form-signup-heading">Enter the information of the entry you want to add</h2>
-			<label for="userid" class="sr-only">UserID</label>
-			<input type="text" name=userid id="userid" class="form-control" placeholder="UserID" required autofocus>
+			<select name=userid class="form-control">
+				{% for userid, username in users %}
+				<option value = {{ userid }} >ID: {{ userid }} Username: {{ username }} </option>
+				{% endfor %}
+			</select>
 			<label for="tag" class="sr-only">Tag</label>
 			<input type="text" name=tag id="tag" class="form-control" placeholder="Tag" required autofocus>
 			<label for="type" class="sr-only">Type</label>
@@ -20,9 +23,12 @@
 		<br></div>
 		<div class="col-sm-4">
 			<form class="form-signup" action="/updateRole" method=post>
-			<h2 class="form-signup-heading">Enter the id of the entry you want to update</h2>
-			<label for="id" class="sr-only">Desired id</label>
-			<input type="text" name=id id="id" class="form-control" placeholder="Desired id" required autofocus>
+			<h2 class="form-signup-heading">Pick the id of the entry you want to update</h2>
+			<select name=id class="form-control">
+				{% for id, userid, tag, type in roles %}
+				<option value = {{ id }} >ID: {{ id }} </option>
+				{% endfor %}
+			</select>
 			<label for="tag" class="sr-only">Tag</label>
 			<input type="text" name=tag id="tag" class="form-control" placeholder="Tag" required autofocus>
 			<label for="type" class="sr-only">Type</label>
@@ -32,9 +38,12 @@
 		<br></div>
 		<div class="col-sm-4">
 			<form class="form-signup" action="/deleteRole" method=post>
-			<h2 class="form-signup-heading">Enter the id of the entry you want to delete</h2>
-			<label for="id" class="sr-only">Desired id</label>
-			<input type="text" name=id id="id" class="form-control" placeholder="Desired id" required autofocus>
+			<h2 class="form-signup-heading">Pick the id of the entry you want to delete</h2>
+			<select name=id class="form-control">
+				{% for id, userid, tag, type in roles %}
+				<option value = {{ id }} >ID: {{ id }} </option>
+				{% endfor %}
+			</select>
 			<button class="btn btn-lg btn-primary btn-block" type="submit">Delete</button>
 			</form>
 		<br></div>
