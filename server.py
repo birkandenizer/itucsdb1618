@@ -82,9 +82,6 @@ def initialize_database():
         )"""
         cursor.execute(query)
 
-        query = """DROP TABLE IF EXISTS HYPES"""
-        cursor.execute(query)
-
         query = """CREATE TABLE IF NOT EXISTS HYPES (
         HYPE_ID         INT             PRIMARY KEY     NOT NULL,
         USER_ID         INT                             NOT NULL,
@@ -94,34 +91,19 @@ def initialize_database():
         )"""
         cursor.execute(query)
 
-        query = """INSERT INTO HYPES (
-        HYPE_ID,
-        USER_ID,
-        DATE,
-        TEXT,
-        TOPIC)
-        VALUES (152, 15, '2016-10-30', 'OMG!! MacBook Pro 2016 was released this week! It is even prettier than my girlfriend :)', 'Technology')"""
-        cursor.execute(query)
-
-        query = """ DROP TABLE IF EXISTS REHYPES """
-        cursor.execute(query)
-
         query = """ CREATE TABLE IF NOT EXISTS REHYPES(
-        HYPE_ID INTEGER NOT NULL,
-        USER_ID INTEGER NOT NULL,
+        HYPE_ID INTEGER NOT NULL REFERENCES HYPES (HYPE_ID),
+        USER_ID INTEGER NOT NULL REFERENCES USERS (USER_ID),
         COMMENT VARCHAR(200),
         DATE DATE NOT NULL,
         PRIMARY KEY (HYPE_ID, USER_ID)
         )"""
         cursor.execute(query)
 
-        query = """ DROP TABLE IF EXISTS FAVORITES """
-        cursor.execute(query)
-
         query = """ CREATE TABLE IF NOT EXISTS FAVORITES(
         ID SERIAL PRIMARY KEY,
-        HYPE_ID INTEGER NOT NULL,
-        USER_ID INTEGER NOT NULL,
+        HYPE_ID INTEGER NOT NULL REFERENCES HYPES (HYPE_ID),
+        USER_ID INTEGER NOT NULL REFERENCES USERS (USER_ID),
         DATE DATE NOT NULL,
         RATE INTEGER NOT NULL,
         UNIQUE(HYPE_ID,USER_ID)
