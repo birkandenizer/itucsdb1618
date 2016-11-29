@@ -11,12 +11,14 @@ from flask import render_template
 from flask.helpers import url_for
 
 from rehype import Rehype
+from favorite import Favorite
 from contact import contact
 from contacts import store_contact
 from followers import followers
 
 app = Flask(__name__)
 app.rehype=Rehype(app)
+app.favorite=Favorite(app)
 app.store_contact = store_contact(app)
 app.followers = followers(app)
 
@@ -103,49 +105,17 @@ def initialize_database():
         )"""
         cursor.execute(query)
 
-        query = """INSERT INTO REHYPES(
-        HYPE_ID,
-        USER_ID,
-        COMMENT,
-        DATE)
-        VALUES(152, 1, 'it is really great!', '2016-10-30')
-        """
+        query = """ DROP TABLE IF EXISTS FAVORITES """
         cursor.execute(query)
 
-        query = """INSERT INTO HYPES (
-        HYPE_ID,
-        USER_ID,
-        DATE,
-        TEXT,
-        TOPIC)
-        VALUES (92, 2, '2016-10-31', 'OMG!! MacBook Pro 2016 was released this week! It is even prettier than my girlfriend :)', 'Music')"""
-        cursor.execute(query)
-
-        query = """INSERT INTO HYPES (
-        HYPE_ID,
-        USER_ID,
-        DATE,
-        TEXT,
-        TOPIC)
-        VALUES (67, 3, '2016-10-31', 'OMG!! MacBook Pro 2016 was released this week! It is even prettier than my girlfriend :)', 'Music')"""
-        cursor.execute(query)
-
-        query = """INSERT INTO HYPES (
-        HYPE_ID,
-        USER_ID,
-        DATE,
-        TEXT,
-        TOPIC)
-        VALUES (102, 15, '2016-11-02', 'Besiktas 1 - 1 Napoli, oleeeey' , 'Sport')"""
-        cursor.execute(query)
-
-        query = """INSERT INTO HYPES (
-        HYPE_ID,
-        USER_ID,
-        DATE,
-        TEXT,
-        TOPIC)
-        VALUES (122, 14, '2016-11-03', 'Manchester City 3 - 1 Barcelona. Poor you Messi!' , 'Sport')"""
+        query = """ CREATE TABLE IF NOT EXISTS FAVORITES(
+        ID SERIAL PRIMARY KEY,
+        HYPE_ID INTEGER NOT NULL,
+        USER_ID INTEGER NOT NULL,
+        DATE DATE NOT NULL,
+        RATE INTEGER NOT NULL,
+        UNIQUE(HYPE_ID,USER_ID)
+        )"""
         cursor.execute(query)
 
 
@@ -306,27 +276,83 @@ def technology_page():
 
 @app.route('/music')
 def music_page():
-    return render_template('music.html', hypespage = app.rehype.List_Hypes())
+    hypespage = app.rehype.List_Hypes()
+    hypespageUsername = app.rehype.List_Users()
+    return render_template('music.html', hypespage = hypespage, hypespageUsername = hypespageUsername)
+
+@app.route('/reypeslist')
+def rehypes_list():
+    rehypespage = app.rehype.List_Rehypes()
+    rehypesUser = app.rehype.List_Users()
+    return render_template('rehypes_list.html', rehypespage = rehypespage, rehypesUser = rehypesUser)
 
 @app.route('/rehypes', methods=['GET', 'POST'])
 def rehypes_page():
     if request.method == 'GET':
-        return render_template('rehypes.html', rehypespage = app.rehype.List_Rehypes())
+        rehypesUser = app.rehype.List_Users()
+        return render_template('rehypes.html', rehypespage = app.rehype.List_Rehypes(), rehypesUser = rehypesUser)
     else:
         comment = request.form['comment']
+        old_user_id = request.form['old_user_id']
         hype_id = request.form['hype_id']
-        app.rehype.Update_Rehype(hype_id, comment)
-        return render_template('rehypes.html', rehypespage = app.rehype.List_Rehypes())
+        user_ids = request.form['user_ids']
+        app.rehype.Update_Rehype(old_user_id, hype_id, comment, user_ids)
+        rehypesUser = app.rehype.List_Users()
+        return render_template('rehypes_list.html', rehypespage = app.rehype.List_Rehypes(), rehypesUser = rehypesUser)
 
 @app.route('/music/add/<user_id>/<hype_id>')
 def music_page_add(user_id, hype_id):
     app.rehype.Add_Rehype(user_id, hype_id)
-    return render_template('rehypes.html', rehypespage = app.rehype.List_Rehypes())
+    rehypesUser = app.rehype.List_Users()
+    return render_template('rehypes.html', rehypespage = app.rehype.List_Rehypes(), rehypesUser = rehypesUser)
 
 @app.route('/music/delete/<user_id>')
 def music_page_delete(user_id):
     app.rehype.Delete_Rehype(user_id)
-    return render_template('rehypes.html', rehypespage = app.rehype.List_Rehypes())
+    rehypesUser = app.rehype.List_Users()
+    return render_template('rehypes_list.html', rehypespage = app.rehype.List_Rehypes(), rehypesUser = rehypesUser)
+
+
+@app.route('/favorites', methods=['GET','POST'])
+def favorites_select():
+    if request.method =='GET':
+        hypespageUsername = app.rehype.List_Users()
+        return render_template('favorites.html', hypespageUsername=hypespageUsername)
+    else:
+        user_ids = request.form['user_ids']
+        favorites = app.favorite.List_Favorites(user_ids)
+        rehypesUser = app.rehype.List_Users()
+        return render_template('selectedfavorites.html', favorites=favorites, rehypesUser=rehypesUser)
+
+@app.route('/favorite/del/<favorite_id>')
+def favorite_delete(favorite_id):
+    app.favorite.Delete_Favorite(favorite_id)
+    hypespageUsername = app.rehype.List_Users()
+    return render_template('favorites.html', hypespageUsername=hypespageUsername)
+
+@app.route('/favorite/update/<favorite_id>', methods=['GET','POST'])
+def favorite_update(favorite_id):
+    if request.method == 'GET':
+        favorites=app.favorite.List_FavoritesID(favorite_id)
+        return render_template('favorite_update.html', favorites=favorites)
+    else:
+        favorite_id = request.form['favorite_id']
+        rate = request.form['rate']
+        app.favorite.Update_Favorite(favorite_id, rate)
+        hypespageUsername = app.rehype.List_Users()
+        return render_template('favorites.html', hypespageUsername=hypespageUsername)
+
+@app.route('/favoriteadd', methods=['GET','POST'])
+def favorite_add():
+    if request.method == 'GET':
+        hypespageUsername = app.rehype.List_Users()
+        return render_template('music.html', hypespage = app.rehype.List_Hypes(), hypespageUsername = hypespageUsername)
+    else:
+        hype_id = request.form['hype_id']
+        user_ids = request.form['user3_ids']
+        app.favorite.Add_Favorite(user_ids, hype_id)
+        hypespageUsername = app.rehype.List_Users()
+        return render_template('music.html', hypespage = app.rehype.List_Hypes(), hypespageUsername = hypespageUsername)
 
 @app.route('/events')
 def events_page():
@@ -446,7 +472,7 @@ def hype():
         TOPIC)
         VALUES("""+ str(hype_id) +", "+ str(user_id) +",'" + str(t) +"','"+ text +"','"+ topic +"' )"
         cursor.execute(query)
-        
+
     return redirect(url_for('hype_page'))
 
 @app.route('/editHype', methods=['POST'])
@@ -457,7 +483,7 @@ def edit_hype():
         cursor = connection.cursor()
         query = "UPDATE HYPES SET TEXT = '"+ text +"' WHERE HYPE_ID =" + str(hype_id)
         cursor.execute(query)
-        
+
     return redirect(url_for('hype_page'))
 
 @app.route('/deleteHype', methods=['POST'])
@@ -490,7 +516,7 @@ if __name__ == '__main__':
     if VCAP_SERVICES is not None:
         app.config['dsn'] = get_elephantsql_dsn(VCAP_SERVICES)
     else:
-        app.config['dsn'] = """user='vagrant' password='vagrant'
-                               host='localhost' port=5432 dbname='itucsdb1618'"""
+        app.config['dsn'] = """user='postgres' password='123'
+                               host='localhost' port=5432 dbname='postgres'"""
 
     app.run(host='0.0.0.0', port=port, debug=debug)
