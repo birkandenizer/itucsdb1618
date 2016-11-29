@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+{% block title %}BLOCKED TABLE{% endblock %}
+{% block content %}
+
+<div class="jumbotron">
+        <h2>BLOCKED TABLE</h2>
+
+
+
+		<table class="table table-bordered table-striped">
+			<tr>
+			<th class="col-sm-1"> UNBLOCK </th>
+			<th class="col-sm-2"> USER_ID_BLOCKER </th>
+			<th class="col-sm-2"> USER_ID_BLOCKED </th>
+			<th class="col-sm-2"> DATE </th>
+			<th class="col-sm-2"> REASON </th>
+			<th class="col-sm-2"> UPDATE </th>
+			</tr>
+
+
+			{% for person_id, block_id, reason, date in sportuser2 %}
+			<tr>
+				<td>
+				<a href="{{ url_for('sport_page_unblock', person_id=person_id, block_id=block_id)}} " style="text-decoration:none;" class="btn btn-danger btn-sm" role="button"> <span class="glyphicon glyphicon-remove"></span> UNBLOCK </a>
+				</td>
+				<td> {{ person_id }}</td>
+				<td> {{ block_id }} </td>
+				<td> {{ date }} </td>
+				<td> {{ reason }} </td>
+				<td>
+					<form role="form" action="/sport_block_update" method="post" name="group_edit" class="form-horizontal">
+						<div class="form-group">
+							<label for="reason" class="control-label col-sm-0"></label>
+							<div class="col-sm-10"> <input type="text" name="reason" requeired autofocus></input> </div>
+							<div class="col-sm-10">
+								<input type="hidden" name="person_id" required autofocus value="{{person_id}}"/>
+							</div>
+							<div class="col-sm-10">
+								<input type="hidden" name="block_id" required autofocus value="{{block_id}}"/>
+							</div>
+							<div class="col-sm-offset-1 col-sm-12">
+								<button type="submit" name="save" class="btn btn-primary">Update Group</button>
+							</div>
+						</div>
+		 	     	</form>
+				</td>
+			</tr>
+
+
+
+
+
+			{% endfor %}
+		</table>
+
+		<a href="{{ url_for('sport_page')}}" button type="button" class="btn btn-primary btn-lg btn-block">Back to Sport Page</a></button>
+
+
+
+
+
+
+
+{% endblock %}
