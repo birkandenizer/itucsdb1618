@@ -30,7 +30,7 @@ class Role:
             try:
                 cursor = connection.cursor()
                 query =  """DELETE FROM ROLES WHERE (ID = %s)"""
-                cursor.execute(query, (id))
+                cursor.execute(query, (id,))
                 connection.commit()
                 cursor.close()
             except dbapi2.DatabaseError:
