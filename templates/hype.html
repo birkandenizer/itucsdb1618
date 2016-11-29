@@ -19,13 +19,13 @@
     <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" />
 
     <!-- Custom styles for this template -->
-    <link href="{{url_for('static', filename='signin.css')}}" rel="stylesheet" />
+    <!--<link href="{{url_for('static', filename='signin.css')}}" rel="stylesheet" /> -->
   </head>
 
   <body>
     <div class="container">
 		<div class="row">
-			<div class="col-sm-4">
+			<div class="col-sm-6">
 				<form class="form-signup" action="/addHype" method=post>
 					<h2 class="form-signup-heading">Wanna Hype??</h2>
 					<label for="user_id" class="sr-only">User ID</label>
@@ -33,38 +33,68 @@
 					<label for="hype_text" class="sr-only">Hype Text</label>
 					<input type="text" name=hype_text id="hype_text" class="form-control" placeholder="Text" required autofocus>
 					<label for="topic" class="sr-only">Topic</label>
-					<input type="text" name=topic id="topic" class="form-control" placeholder="Topic" required autofocus>
+					<select name = "topic" class="form-control">
+						  <option value="Music">Music</option>
+						  <option value="News">News</option>
+						  <option value="Technology">Technology</option>
+						  <option value="Sport">Sport</option>
+					</select>
 					<button class="btn btn-lg btn-primary btn-block" type="submit">HYPE</button>
 				</form>
-			</div>
-			<div class="col-sm-4">
-  				<form class="form-signin" action="/editHype" method=post>
-					<h2 class="form-signin-heading">Edit Info</h2>
+				<form class="form-signin" action="/editHype" method=post>
+					<h2 class="form-signin-heading">Edit Hype</h2>
 					<label for="update_hype_id" class="sr-only">Hype ID</label>
-					<input type="text" name=update_hype_id id="update_hype_id" class="form-control" placeholder="Hype ID" required autofocus>
+					<select name = "update_hype_id" class="form-control">
+					{% for hype_id, user_id, date, text, topic in hypes %}
+						  <option value = {{ hype_id }}>Hype ID: {{ hype_id }} </option>
+					{% endfor %}
+					</select>
 					<label for="update_hype_text" class="sr-only">Hype Text</label>
 					<input type="text" name=update_hype_text id="update_hype_text" class="form-control" placeholder="Hype Text" required autofocus>
 					<button class="btn btn-lg btn-primary btn-block" type="submit">Edit!</button>
       			</form>
 			</div>
-			<div class="col-sm-4">
-  				<form class="form-signin" action="/deleteHype" method=post>
+			<div class="col-sm-6">
+  				<form class="form-signin" action="/commentHype" method=post>
+					<h2 class="form-signin-heading">Comment</h2>
+					<label for="comment_user_id" class="sr-only">User ID</label>
+					<input type="text" name=comment_user_id id="comment_user_id" class="form-control" placeholder="User ID" required autofocus>
+					<label for="comment_hype_id" class="sr-only">Hype ID</label>
+					<select name = "comment_hype_id" class="form-control">
+					{% for hype_id, user_id, date, text, topic in hypes %}
+						  <option value = {{ hype_id }}>Hype ID: {{ hype_id }} </option>
+					{% endfor %}
+					</select>
+					<label for="update_hype_text" class="sr-only">Comment</label>
+					<input type="text" name=comment_text id="comment_text" class="form-control" placeholder="Comment" required autofocus>
+					<button class="btn btn-lg btn-primary btn-block" type="submit">Commandante</button>
+      			</form>
+      			<form class="form-signin" action="/deleteHype" method=post>
 					<h2 class="form-signin-heading">Delete Hype</h2>
 					<label for="delete_hype_id" class="sr-only">Hype ID</label>
-					<input type="text" name=delete_hype_id id="delete_hype_id" class="form-control" placeholder="Hype ID" required autofocus>
+					<select name = "delete_hype_id" class="form-control">
+					{% for hype_id, user_id, date, text, topic in hypes %}
+						  <option value = {{ hype_id }}>Hype ID: {{ hype_id }} </option>
+					{% endfor %}
+					</select>
 					<button class="btn btn-lg btn-primary btn-block" type="submit">Delete...</button>
       			</form>
-      			<form class="form-signin" action="/selectHype" method=post>
+      			<!--<form class="form-signin" action="/selectHype" method=post>
 					<h2 class="form-signin-heading">Select Hype</h2>
 					<label for="select_hype_id" class="sr-only">Hype ID</label>
-					<input type="text" name=select_hype_id id="select_hype_id" class="form-control" placeholder="Hype ID" required autofocus>
+					<select name = "select_hype_id" class="form-control">
+					{% for hype_id, user_id, date, text, topic in hypes %}
+						  <option value = {{ hype_id }}>Hype ID: {{ hype_id }} </option>
+					{% endfor %}
+					</select>
 					<button class="btn btn-lg btn-primary btn-block" type="submit">Select</button>
-      			</form>
+      			</form>-->
 			</div>
+			
 		</div>
 		<div class="row">
 			<div class="col-sm-12">
-				<h1>Selected Hypes from the Database</h1>
+				<h1>All the Hypes from the Database</h1>
 				<table class="table table-bordered table-striped">
 					<tr>
 					<th class="col-sm-2"> Hype ID </th>
@@ -85,6 +115,29 @@
 				</table>
 			</div>
 		</div>
+		<!--<div class="row">
+			<div class="col-sm-12">
+				<h1>Selected Hype from the Database</h1>
+				<table class="table table-bordered table-striped">
+					<tr>
+					<th class="col-sm-2"> Hype ID </th>
+					<th class="col-sm-2"> User ID </th>
+					<th class="col-sm-2"> Date </th>
+					<th class="col-sm-4"> Text </th>
+					<th class="col-sm-2"> Topic </th>
+					</tr>
+					{% for hype_id, user_id, date, text, topic in selectedHype %}
+					<tr>
+					<td> {{ hype_id }}</td>
+					<td> {{ user_id }} </td>
+					<td> {{ date }} </td>
+					<td> {{ text }} </td>
+					<td> {{ topic }} </td>
+					</tr>
+					{% endfor %}
+				</table>
+			</div>
+		</div>-->
     </div> <!-- /container -->
   </body>
 </html>
