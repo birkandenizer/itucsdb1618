@@ -15,12 +15,14 @@ from favorite import Favorite
 from contact import contact
 from contacts import store_contact
 from followers import followers
+from role import Role
 
 app = Flask(__name__)
 app.rehype=Rehype(app)
 app.favorite=Favorite(app)
 app.store_contact = store_contact(app)
 app.followers = followers(app)
+app.role=Role(app)
 
 def get_elephantsql_dsn(vcap_services):
     """Returns the data source name for ElephantSQL."""
@@ -59,6 +61,14 @@ def initialize_database():
         EMAIL          VARCHAR(50) NOT NULL,
         PASSWORD       VARCHAR(25) NOT NULL,
         FOLLOWERCOUNT  INT
+        )"""
+        cursor.execute(query)
+        
+        query = """CREATE TABLE IF NOT EXISTS ROLES (
+        ID             SERIAL PRIMARY KEY,
+        USER_ID        INT REFERENCES USERS(USER_ID) ON DELETE CASCADE,
+        TAG            VARCHAR(50) NOT NULL,
+        TYPE           VARCHAR(50) NOT NULL
         )"""
         cursor.execute(query)
 
@@ -237,6 +247,32 @@ def user_management_page():
         finally:
             connection.commit()
     return render_template('users.html', users = users)
+
+@app.route('/roleManagement')
+def roles_page():
+    return render_template('roles.html', roles = app.role.List_Roles())
+
+@app.route('/addRole', methods=['POST'])
+def add_role():
+    userid = request.form['userid']
+    tag = request.form['tag']
+    type = request.form['type']
+    app.role.Add_Roles(userid, tag, type)
+    return render_template('roles.html', roles = app.role.List_Roles())
+
+@app.route('/updateRole', methods=['POST'])
+def update_role():
+    id = request.form['id']
+    tag = request.form['tag']
+    type = request.form['type']
+    app.role.Update_Roles(id, tag, type)
+    return render_template('roles.html', roles = app.role.List_Roles())
+
+@app.route('/deleteRole', methods=['POST'])
+def delete_role():
+    id = request.form['id']
+    app.role.Delete_Roles(id)
+    return render_template('roles.html', roles = app.role.List_Roles())
 
 @app.route('/news')
 def news_page():
