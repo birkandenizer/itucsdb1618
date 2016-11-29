@@ -17,6 +17,7 @@ from contacts import store_contact
 from followers import followers
 from block import block
 from role import Role
+from attachment import Attachment
 
 app = Flask(__name__)
 app.rehype=Rehype(app)
@@ -24,6 +25,7 @@ app.favorite=Favorite(app)
 app.store_contact = store_contact(app)
 app.followers = followers(app)
 app.role=Role(app)
+app.attachment=Attachment(app)
 
 def get_elephantsql_dsn(vcap_services):
     """Returns the data source name for ElephantSQL."""
@@ -89,6 +91,14 @@ def initialize_database():
         DATE            DATE                         NOT NULL,
         TEXT            VARCHAR(150)                 NOT NULL,
         TOPIC           VARCHAR(20)                  NOT NULL
+        )"""
+        cursor.execute(query)
+        
+        query = """CREATE TABLE IF NOT EXISTS ATTACHMENT (
+        ATTACHMENT_ID            INT             PRIMARY KEY     NOT NULL,
+        HYPE_ID                  INT                             NOT NULL REFERENCES HYPES (HYPE_ID) ON DELETE CASCADE,
+        ATTACHMENT_TYPE          VARCHAR(10)                     NOT NULL,
+        URL                      VARCHAR(100)                    NOT NULL
         )"""
         cursor.execute(query)
 
@@ -556,7 +566,7 @@ def hype():
         VALUES("""+ str(hype_id) +", "+ str(user_id) +",'" + str(t) +"','"+ text +"','"+ topic +"' )"
         cursor.execute(query)
 
-    return redirect(url_for('hype_page'))
+    return render_template("attachment.html", hype_id = hype_id)
 
 @app.route('/commentHype', methods=['POST'])
 def comment_hype():
@@ -605,6 +615,51 @@ def select_hype():
         cursor.execute(query)
         selectedHype = cursor.fetchall()
     return redirect(url_for('hype_page'))
+
+@app.route('/hype/attachment')
+def attachment_page():
+    return render_template('attachment.html')
+
+@app.route('/hype/attachment/add',methods=['POST'])
+def add_attachment():
+    with dbapi2.connect(app.config['dsn']) as connection:
+            cursor = connection.cursor()
+            query = "SELECT ATTACHMENT_ID FROM ATTACHMENT ORDER BY ATTACHMENT_ID DESC LIMIT 1"
+            cursor.execute(query)
+            attachment_id = cursor.fetchone()
+            if  attachment_id is None:
+                attachment_id = 1
+            else:
+                attachment_id = attachment_id[0]
+                attachment_id = attachment_id + 1
+
+            hype_id = request.form['hype_id']
+            attachment_type = request.form['attachment_type']
+            url = request.form['url']
+
+    app.attachment.add_attachment(attachment_id,hype_id,attachment_type,url)
+    return redirect(url_for('list_attachment'))
+
+@app.route('/hype/attachment/list',methods=['GET'])
+def list_attachment():
+    return render_template('attachments.html',attachmentspage = app.attachment.list_attachments())
+
+@app.route('/hype/attachment/update',methods=['GET', 'POST'])
+def update_attachment():
+    if request.method == 'GET':
+        return render_template('attachment_update.html' , attachmentspage = app.attachment.list_attachments())
+
+    else:
+        attachment_id=request.form['attachment_id']
+        attachment_type=request.form['attachment_type']
+        url=request.form['url']
+        app.attachment.update_attachment(attachment_id,attachment_type,url)
+        return render_template('attachments.html', attachmentspage = app.attachment.list_attachments())
+
+@app.route('/hype/attachment/delete/<attachment_id>')
+def delete_attachment(attachment_id):
+    app.attachment.delete_attachment(attachment_id)
+    return render_template('attachments.html' , attachmentspage = app.attachment.list_attachments())
 
 if __name__ == '__main__':
     VCAP_APP_PORT = os.getenv('VCAP_APP_PORT')
