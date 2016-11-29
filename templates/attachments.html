@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block title %}Add Attachment{% endblock %}
+{% block content %}
+
+<head>
+    <!-- Bootstrap core CSS -->
+    <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" />
+    <link href="{{url_for('static', filename='contact.css')}}" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+    	<div class="row">
+			<div class="col-sm-12">
+				<h1>Selected Attachments from the Database</h1>
+				<table class="table table-bordered table-striped">
+					<tr>
+					<th class="col-sm-2"> Attachment ID </th>
+					<th class="col-sm-2"> Hype ID </th>
+					<th class="col-sm-2"> Attachment Type </th>
+					<th class="col-sm-4"> URL </th>
+					</tr>
+					{% for attachment_id,hype_id,attachment_type, url in attachmentspage %}
+					<tr>
+						<td> {{ attachment_id }}</td>
+						<td> {{ hype_id }} </td>
+						<td> {{ attachment_type }} </td>
+						<td> {{ url }} </td>
+						<td> <a href="{{ url_for('update_attachment', attachment_id=attachment_id)}}" style="text-decoration:none;" class="btn btn-danger btn-sm" role="button"> <span class="glyphicon glyphicon-wrench"></span> UPDATE </a>
+							 <a href="{{ url_for('delete_attachment', attachment_id=attachment_id)}} " style="text-decoration:none;" class="btn btn-danger btn-sm" role="button"> <span class="glyphicon glyphicon-remove"></span> DELETE </a>
+						</td>
+					</tr>
+					{% endfor %}
+				</table>
+			</div>
+		</div>
+    </div> <!-- /container -->
+  </body>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% block title %}Add Attachment{% endblock %}
+{% block content %}
+
+<head>
+    <!-- Bootstrap core CSS -->
+    <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" />
+    <link href="{{url_for('static', filename='contact.css')}}" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+    	<div class="row">
+			<div class="col-sm-12">
+				<h1>Selected Attachments from the Database</h1>
+				<table class="table table-bordered table-striped">
+					<tr>
+					<th class="col-sm-2"> Attachment ID </th>
+					<th class="col-sm-2"> Hype ID </th>
+					<th class="col-sm-2"> Attachment Type </th>
+					<th class="col-sm-4"> URL </th>
+					</tr>
+					{% for attachment_id,hype_id,attachment_type, url in attachmentspage %}
+					<tr>
+						<td> {{ attachment_id }}</td>
+						<td> {{ hype_id }} </td>
+						<td> {{ attachment_type }} </td>
+						<td> {{ url }} </td>
+					</tr>
+					{% endfor %}
+				</table>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-4">
+  				<form class="form-signin" action="/hype/attachment/delete" method=post>
+					<h2 class="form-signin-heading">Delete Attachment</h2>
+					<label for="attachment_id" class="sr-only">Attachment ID</label>
+					<input type="text" name=attachment_id id="attachment_id" class="form-control" placeholder="Attachment ID" required autofocus>
+					<button class="btn btn-lg btn-primary btn-block" type="submit">Delete...</button>
+      			</form>
+			</div>
+		</div>
+
+    </div> <!-- /container -->
+  </body>
+{% endblock %}

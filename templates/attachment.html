@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block title %}Add Attachment{% endblock %}
+{% block content %}
+
+<head>
+    <!-- Bootstrap core CSS -->
+    <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" />
+    <link href="{{url_for('static', filename='contact.css')}}" rel="stylesheet" />
+</head>
+<br />
+<a href="{{url_for('hype_page')}}">Skip adding attachments</a>
+<br /><br /><br />
+<div class="inner contact">
+    <!-- Form Area -->
+    <div class="contact-form">
+        <!-- Form -->
+        <form id="contact-us" method="post" action="/hype/attachment/add">
+            <!-- Left Inputs -->
+            <div class="col-xs-6 wow animated slideInLeft" data-wow-delay=".5s">
+            	<!-- Hype Id -->
+            	<input type="hidden" name="hype_id" value="{{hype_id}}" />
+            	<!-- Attachment Type -->
+                <input type="text" name="attachment_type" id="attachment_type" required="required" class="form" placeholder="Attachment Type(jpg,png,pdf etc.)" />
+                <!-- URL -->
+                <input type="text" name="url" id="url" required="required" class="form" placeholder="URL of the attachment" />
+                <!-- Send Button -->
+                <button type="submit" id="submit" name="submit" class="form-btn semibold">Send Message</button>
+            </div><!-- End Left Inputs -->
+        </form>
+    </div><!-- End Contact Form Area -->
+</div><!-- End Inner -->
+{% endblock %}
