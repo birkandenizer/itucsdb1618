@@ -83,11 +83,23 @@ def initialize_database():
         cursor.execute(query)
 
         query = """CREATE TABLE IF NOT EXISTS HYPES (
-        HYPE_ID         INT             PRIMARY KEY     NOT NULL,
-        USER_ID         INT                             NOT NULL,
-        DATE            DATE                            NOT NULL,
-        TEXT            VARCHAR(150)                    NOT NULL,
-        TOPIC           VARCHAR(20)                     NOT NULL
+        HYPE_ID         SERIAL        PRIMARY KEY    NOT NULL,
+        USER_ID         INT                          NOT NULL,
+        DATE            DATE                         NOT NULL,
+        TEXT            VARCHAR(150)                 NOT NULL,
+        TOPIC           VARCHAR(20)                  NOT NULL
+        )"""
+        cursor.execute(query)
+
+        query = """DROP TABLE IF EXISTS COMMENTS"""
+        cursor.execute(query)
+
+        query = """CREATE TABLE IF NOT EXISTS COMMENTS (
+        COMMENT_ID      SERIAL    PRIMARY KEY   NOT NULL,
+        HYPE_ID         INT       REFERENCES    HYPES(HYPE_ID)    ON DELETE CASCADE,
+        USER_ID         INT                     NOT NULL,
+        DATE            DATE                    NOT NULL,
+        TEXT            VARCHAR(150)            NOT NULL
         )"""
         cursor.execute(query)
 
@@ -469,7 +481,18 @@ def about_page():
 
 @app.route('/hype')
 def hype_page():
-    return render_template('hype.html')
+    with dbapi2.connect(app.config['dsn']) as connection:
+        try:
+            cursor = connection.cursor()
+            query = """ SELECT * FROM HYPES ORDER BY USER_ID"""
+            cursor.execute(query)
+            hypes = cursor.fetchall()
+        except dbapi2.DatabaseError:
+            connection.rollback()
+        finally:
+            connection.commit()
+
+    return render_template('hype.html', hypes = hypes)
 
 @app.route('/addHype', methods=['POST'])
 def hype():
@@ -503,6 +526,24 @@ def hype():
 
     return redirect(url_for('hype_page'))
 
+@app.route('/commentHype', methods=['POST'])
+def comment_hype():
+    hype_id = request.form['comment_hype_id']
+    user_id = request.form['comment_user_id']
+    t = datetime.date.today()
+    text = request.form['comment_text']
+    with dbapi2.connect(app.config['dsn']) as connection:
+        cursor = connection.cursor()
+        query = """INSERT INTO COMMENTS(
+        HYPE_ID,
+        USER_ID,
+        DATE,
+        TEXT)
+        VALUES("""+ str(hype_id) +", "+ str(user_id) +",'" + str(t) +"','"+ text + "' )"
+        cursor.execute(query)
+
+    return redirect(url_for('hype_page'))
+
 @app.route('/editHype', methods=['POST'])
 def edit_hype():
     with dbapi2.connect(app.config['dsn']) as connection:
@@ -531,7 +572,7 @@ def select_hype():
         query = "SELECT * FROM HYPES WHERE HYPE_ID =" + str(hype_id)
         cursor.execute(query)
         selectedHype = cursor.fetchall()
-    return render_template('hype.html', hypes = selectedHype)
+    return redirect(url_for('hype_page'))
 
 if __name__ == '__main__':
     VCAP_APP_PORT = os.getenv('VCAP_APP_PORT')
