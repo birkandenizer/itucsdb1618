@@ -15,6 +15,7 @@ from favorite import Favorite
 from contact import contact
 from contacts import store_contact
 from followers import followers
+from block import block
 from role import Role
 
 app = Flask(__name__)
@@ -122,13 +123,9 @@ def initialize_database():
         )"""
         cursor.execute(query)
 
-
-        query = """ DROP TABLE IF EXISTS FOLLOWER """
-        cursor.execute(query)
-
         query = """ CREATE TABLE IF NOT EXISTS FOLLOWER(
-        PERSON_ID INTEGER NOT NULL,
-        FOLLOWER_ID INTEGER NOT NULL,
+        PERSON_ID INTEGER NOT NULL REFERENCES USERS (USER_ID),
+        FOLLOWER_ID INTEGER NOT NULL REFERENCES USERS (USER_ID),
         GROUP_NAME VARCHAR(50),
         DATE DATE NOT NULL,
         PRIMARY KEY(PERSON_ID,FOLLOWER_ID)
@@ -136,6 +133,15 @@ def initialize_database():
         cursor.execute(query)
 
         query = """INSERT INTO FOLLOWER(PERSON_ID, FOLLOWER_ID, GROUP_NAME, DATE) VALUES (1, 2, 'Family' , '2016-10-31')"""
+        cursor.execute(query)
+
+        query = """ CREATE TABLE IF NOT EXISTS BLOCKED(
+        PERSON_ID INTEGER NOT NULL REFERENCES USERS (USER_ID),
+        BLOCK_ID INTEGER NOT NULL REFERENCES USERS (USER_ID),
+        REASON VARCHAR(50),
+        DATE DATE NOT NULL,
+        PRIMARY KEY(PERSON_ID,BLOCK_ID)
+        )"""
         cursor.execute(query)
 
 
@@ -286,14 +292,41 @@ def news_page():
 @app.route('/sport', methods=['GET', 'POST'])
 def sport_page():
     if request.method == 'GET':
-        return render_template('sport.html' , sportpage = app.followers.select_followers())
+        return render_template('sport.html' , sportpage = app.followers.select_followers() , sportuser = app.followers.select_users())
     else:
         person_id = request.form['person_id']
         follower_id = request.form['follower_id']
         group_name = request.form['group_name']
         app.followers.update_group(person_id, follower_id, group_name)
-        return render_template('sport.html' , sportpage = app.followers.select_followers())
+        return render_template('show_users_following.html' , sportpage2 = app.followers.show_followers())
 
+
+@app.route('/sport_block_update', methods=['GET', 'POST'])
+def sport_page_block_uptade():
+    if request.method == 'GET':
+        return render_template('show_users_blocked.html' , sportuser2 = app.block.select_users())
+    else:
+        person_id = request.form['person_id']
+        block_id = request.form['block_id']
+        reason = request.form['reason']
+        app.block.update_reason(person_id, block_id, reason)
+        return render_template('show_users_blocked.html' , sportuser2 = app.block.select_users())
+
+@app.route('/sport_block', methods=['GET', 'POST'])
+def sport_page_add_x():
+    if request.method == 'GET':
+        return render_template('sport.html' , sportpage = app.followers.select_followers() , sportuser = app.followers.select_users())
+    else:
+        person_id = request.form['user_ids']
+        block_id = request.form['user_blocked']
+        reason = request.form['reason']
+        app.block.add_block(person_id, block_id, reason)
+        return render_template('show_users_blocked.html' , sportuser2 = app.block.select_users())
+
+@app.route('/sport/unblock/<person_id>/<block_id>')
+def sport_page_unblock(person_id, block_id):
+    app.block.delete_block(person_id, block_id)
+    return render_template('sport.html' , sportpage = app.followers.select_followers() , sportuser = app.followers.select_users())
 
 
 @app.route('/sport/add/<follower_id>')
@@ -302,12 +335,11 @@ def sport_page_add(follower_id):
     app.followers.add_follow(sayi, follower_id)
     return render_template('show_users_following.html' , sportpage2 = app.followers.show_followers())
 
+
 @app.route('/sport/delete/<follower_id>')
 def sport_page_delete(follower_id):
     app.followers.delete_follow(follower_id)
     return render_template('show_users_following.html' , sportpage2 = app.followers.show_followers())
-
-
 
 
 @app.route('/technology')
