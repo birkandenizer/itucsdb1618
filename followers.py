@@ -21,6 +21,14 @@ class followers:
              cursor.execute(query)
              sportpage = cursor.fetchall()
              return sportpage
+            
+    def select_users(self):
+        with dbapi2.connect(self.app.config['dsn']) as connection:
+             cursor = connection.cursor()
+             query = """ SELECT * FROM USERS """
+             cursor.execute(query)
+             sportuser = cursor.fetchall()
+             return sportuser
 
     def update_group(self, person_id, follower_id, group_name):
         with dbapi2.connect(self.app.config['dsn']) as connection:
