@@ -26,6 +26,7 @@ app.store_contact = store_contact(app)
 app.followers = followers(app)
 app.role=Role(app)
 app.attachment=Attachment(app)
+app.block = block(app)
 
 def get_elephantsql_dsn(vcap_services):
     """Returns the data source name for ElephantSQL."""
