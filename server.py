@@ -56,10 +56,6 @@ def initialize_database():
         query = """INSERT INTO COUNTER (N) VALUES (0)"""
         cursor.execute(query)
 
-        app.attachment.initialize_table()
-        app.contacts.initialize_table()
-
-
         query = """CREATE TABLE IF NOT EXISTS USERS (
         USER_ID        INT PRIMARY KEY NOT NULL,
         USERNAME       VARCHAR(50) NOT NULL,
@@ -136,6 +132,9 @@ def initialize_database():
         PRIMARY KEY(PERSON_ID,BLOCK_ID)
         )"""
         cursor.execute(query)
+        
+        app.attachment.initialize_table()
+        app.contacts.initialize_table()
 
         connection.commit()
 
