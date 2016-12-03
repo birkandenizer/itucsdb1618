@@ -9,36 +9,11 @@
 </head>
 <body>
     <div class="container">
-    	<div class="row">
-			<div class="col-sm-12">
-				<h1>Selected Attachments from the Database</h1>
-				<table class="table table-bordered table-striped">
-					<tr>
-					<th class="col-sm-2"> Attachment ID </th>
-					<th class="col-sm-2"> Hype ID </th>
-					<th class="col-sm-2"> Attachment Type </th>
-					<th class="col-sm-4"> URL </th>
-					</tr>
-					{% for attachment_id,hype_id,attachment_type, url in attachmentspage %}
-					<tr>
-						<td> {{ attachment_id }}</td>
-						<td> {{ hype_id }} </td>
-						<td> {{ attachment_type }} </td>
-						<td> {{ url }} </td>
-					</tr>
-					{% endfor %}
-				</table>
-			</div>
-		</div>
 		<div class="row">
 			<div class="col-sm-4">
-  				<form class="form-signin" action="/hype/attachment/update" method=post>
+  				<form class="form-signin" action="/hype/attachment/update/<attachment_id>" method=post>
 					<h2 class="form-signin-heading">Edit Attachment</h2>
-					<select name="attachment_id">
-								{% for attachment_id,hype_id,attachment_type,url in attachmentspage %}
-		                            <option value="{{attachment_id}}">{{attachment_id}}</option>
-		                        {% endfor %}
-                            </select>
+                	<input type="hidden" name="attachment_id" value="{{attachment_id}}" />
 					<label for="attachment_type" class="sr-only">Attachment Type</label>
 					<input type="text" name="attachment_type" id="attachment_type" class="form-control" placeholder="Attachment Type" required autofocus>
 					<label for="url" class="sr-only">URL</label>
@@ -47,7 +22,6 @@
       			</form>
 			</div>
 		</div>
-
     </div> <!-- /container -->
   </body>
 {% endblock %}

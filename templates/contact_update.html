@@ -8,7 +8,7 @@
     <link href="{{url_for('static', filename='contact.css')}}" rel="stylesheet" />
 </head>
 <br />
-<p>Updates Contact Us page as long as Ticket ID remains same</p>
+<p>Updates Contact Us page</p>
 <br /><br />
 <div class="inner contact">
     <!-- Form Area -->
@@ -17,6 +17,8 @@
         <form id="contact-us" method="post" action="/contact/update/<ticket_id>">
             <!-- Left Inputs -->
             <div class="col-xs-6 wow animated slideInLeft" data-wow-delay=".5s">
+            	<!-- Ticket_ID -->
+                <input type="hidden" name="ticket_id" value="{{ticket_id}}" />
             	<!-- Subject -->
                 <input type="text" name="subject" id="subject" required="required" class="form" placeholder="Subject" />
                 <!-- Name -->
@@ -27,8 +29,6 @@
                 <input type="email" name="email" id="mail" required="required" class="form" placeholder="Email" />
                 <!-- Message -->
                 <textarea name="message" id="message" class="form textarea"  placeholder="Message"></textarea>
-                <!-- Ticket_id -->
-                <input type="number" name="ticket_id" id="ticket_id" required="required" class="form" placeholder="ticket_id" />
                 <!-- Send Button -->
                 <button type="submit" id="submit" name="submit" class="form-btn semibold">Update Info</button>
             </div><!-- End Left Inputs -->

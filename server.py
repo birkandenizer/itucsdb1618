@@ -12,8 +12,7 @@ from flask.helpers import url_for
 
 from rehype import Rehype
 from favorite import Favorite
-from contact import contact
-from contacts import store_contact
+from contacts import Contact
 from followers import followers
 from block import block
 from role import Role
@@ -22,11 +21,11 @@ from attachment import Attachment
 app = Flask(__name__)
 app.rehype=Rehype(app)
 app.favorite=Favorite(app)
-app.store_contact = store_contact(app)
-app.followers = followers(app)
+app.followers=followers(app)
 app.role=Role(app)
 app.attachment=Attachment(app)
-app.block = block(app)
+app.block=block(app)
+app.contacts=Contact(app)
 
 def get_elephantsql_dsn(vcap_services):
     """Returns the data source name for ElephantSQL."""
@@ -57,6 +56,10 @@ def initialize_database():
         query = """INSERT INTO COUNTER (N) VALUES (0)"""
         cursor.execute(query)
 
+        app.attachment.initialize_table()
+        app.contacts.initialize_table()
+
+
         query = """CREATE TABLE IF NOT EXISTS USERS (
         USER_ID        INT PRIMARY KEY NOT NULL,
         USERNAME       VARCHAR(50) NOT NULL,
@@ -67,22 +70,12 @@ def initialize_database():
         FOLLOWERCOUNT  INT
         )"""
         cursor.execute(query)
-        
+
         query = """CREATE TABLE IF NOT EXISTS ROLES (
         ID             SERIAL PRIMARY KEY,
         USER_ID        INT REFERENCES USERS(USER_ID) ON DELETE CASCADE,
         TAG            VARCHAR(50) NOT NULL,
         TYPE           VARCHAR(50) NOT NULL
-        )"""
-        cursor.execute(query)
-
-        query = """CREATE TABLE IF NOT EXISTS CONTACT (
-        SUBJECT     VARCHAR(20) NOT NULL,
-        NAME        VARCHAR(20) NOT NULL,
-        SURNAME     VARCHAR(20) NOT NULL,
-        EMAIL       VARCHAR(30) NOT NULL,
-        MESSAGE   VARCHAR(200) NOT NULL,
-        TICKET_ID    INT PRIMARY KEY NOT NULL
         )"""
         cursor.execute(query)
 
@@ -92,14 +85,6 @@ def initialize_database():
         DATE            DATE                         NOT NULL,
         TEXT            VARCHAR(150)                 NOT NULL,
         TOPIC           VARCHAR(20)                  NOT NULL
-        )"""
-        cursor.execute(query)
-        
-        query = """CREATE TABLE IF NOT EXISTS ATTACHMENT (
-        ATTACHMENT_ID            INT             PRIMARY KEY     NOT NULL,
-        HYPE_ID                  INT                             NOT NULL REFERENCES HYPES (HYPE_ID) ON DELETE CASCADE,
-        ATTACHMENT_TYPE          VARCHAR(10)                     NOT NULL,
-        URL                      VARCHAR(100)                    NOT NULL
         )"""
         cursor.execute(query)
 
@@ -142,7 +127,7 @@ def initialize_database():
         PRIMARY KEY(PERSON_ID,FOLLOWER_ID)
         )"""
         cursor.execute(query)
-        
+
         query = """ CREATE TABLE IF NOT EXISTS BLOCKED(
         PERSON_ID INTEGER NOT NULL REFERENCES USERS (USER_ID) ON DELETE CASCADE,
         BLOCK_ID INTEGER NOT NULL REFERENCES USERS (USER_ID) ON DELETE CASCADE,
@@ -151,7 +136,6 @@ def initialize_database():
         PRIMARY KEY(PERSON_ID,BLOCK_ID)
         )"""
         cursor.execute(query)
-
 
         connection.commit()
 
@@ -445,76 +429,47 @@ def contact_page():
     return render_template('contact.html')
 @app.route('/contacts')
 def contacts_page():
-    return render_template('contacts.html', contacts = app.store_contact.select_contact())
+    return render_template('contacts.html', contacts = app.contacts.list_contacts())
 
 @app.route('/contact/add',methods=['POST'])
-def contact_add_page():
-    subject = request.form['subject']
-    name = request.form['name']
-    surname = request.form['surname']
-    email = request.form['email']
-    message = request.form['message']
-    ticket_id = request.form['ticket_id']
+def add_contact():
     with dbapi2.connect(app.config['dsn']) as connection:
-        try:
             cursor = connection.cursor()
-            query = """INSERT INTO CONTACT (SUBJECT,NAME,SURNAME,EMAIL,MESSAGE,TICKET_ID)
-            VALUES ('"""+ subject  +"""', '"""+ name  +"""', '"""+ surname +"""', '"""+ email +"""', '"""+ message +"""','"""+ ticket_id +"""')"""
+            query = "SELECT TICKET_ID FROM CONTACT ORDER BY TICKET_ID DESC LIMIT 1"
             cursor.execute(query)
-        except dbapi2.DatabaseError:
-                connection.rollback()
-        finally:
-               connection.commit()
+            ticket_id = cursor.fetchone()
+            if  ticket_id is None:
+                ticket_id = 1
+            else:
+                ticket_id = ticket_id[0]
+                ticket_id = ticket_id + 1
+            subject = request.form['subject']
+            name = request.form['name']
+            surname = request.form['surname']
+            email = request.form['email']
+            message = request.form['message']
+    app.contacts.add_contact(ticket_id,subject,name,surname,email,message)
     return redirect(url_for('home_page'))
 
-
 @app.route('/contact/update/<ticket_id>', methods=['GET', 'POST'])
-def contact_update_page(ticket_id):
+def update_contact(ticket_id):
     if request.method == 'GET':
-        return render_template('contact_update.html', contact = app.store_contact.get_contact(ticket_id))
+        return render_template('contact_update.html', ticket_id = ticket_id)
     else:
+        ticket_id = request.form['ticket_id']
         subject = request.form['subject']
         name = request.form['name']
         surname = request.form['surname']
         email = request.form['email']
         message = request.form['message']
-        ticket_id = request.form['ticket_id']
-
-        with dbapi2.connect(app.config['dsn']) as connection:
-            try:
-                cursor = connection.cursor()
-                query = """UPDATE CONTACT
-                 SET SUBJECT = '"""+ subject +"""', NAME = '"""+ name +"""',
-                 SURNAME = '"""+ surname +"""', EMAIL = '"""+ email +"""',
-                 MESSAGE = '"""+ message +"""'
-                 WHERE TICKET_ID = '""" + ticket_id +"""'"""
-                cursor.execute(query, (subject, name, surname, email, message, ticket_id))
-                connection.commit()
-                cursor.close()
-            except dbapi2.DatabaseError:
-                connection.rollback()
-            finally:
-               connection.commit()
+        app.contacts.update_contact(subject,name,surname,email,message,ticket_id)
         return redirect(url_for('contacts_page'))
 
-@app.route('/contact/delete/<ticket_id>', methods=['GET', 'POST'])
-def contact_delete_page(ticket_id):
-    if request.method == 'GET':
-        return render_template('contact_delete.html', contact = app.store_contact.delete_contact(ticket_id))
-    else:
-        ticket_id = request.form['ticket_id']
+@app.route('/contact/delete/<ticket_id>')
+def delete_contact(ticket_id):
+    app.contacts.delete_contact(ticket_id)
+    return redirect(url_for('contacts_page'))
 
-        with dbapi2.connect(app.config['dsn']) as connection:
-            try:
-                cursor = connection.cursor()
-                query = """ DELETE FROM CONTACT WHERE ticket_id = %s """
-                cursor.execute(query, [ticket_id])
-                connection.commit()
-            except dbapi2.DatabaseError:
-                connection.rollback()
-            finally:
-               connection.commit()
-        return redirect(url_for('contacts_page'))
 @app.route('/about')
 def about_page():
     return render_template('about.html')
@@ -642,17 +597,17 @@ def add_attachment():
 def list_attachment():
     return render_template('attachments.html',attachmentspage = app.attachment.list_attachments())
 
-@app.route('/hype/attachment/update',methods=['GET', 'POST'])
-def update_attachment():
+@app.route('/hype/attachment/update/<attachment_id>',methods=['GET', 'POST'])
+def update_attachment(attachment_id):
     if request.method == 'GET':
-        return render_template('attachment_update.html' , attachmentspage = app.attachment.list_attachments())
+        return render_template('attachment_update.html', attachment_id = attachment_id)
 
     else:
         attachment_id=request.form['attachment_id']
         attachment_type=request.form['attachment_type']
         url=request.form['url']
         app.attachment.update_attachment(attachment_id,attachment_type,url)
-        return render_template('attachments.html', attachmentspage = app.attachment.list_attachments())
+        return redirect(url_for('list_attachment'))
 
 @app.route('/hype/attachment/delete/<attachment_id>')
 def delete_attachment(attachment_id):

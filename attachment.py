@@ -4,6 +4,22 @@ class Attachment:
     def __init__(self, app):
         self.app = app
 
+    def initialize_table(self):
+        with dbapi2.connect(self.app.config['dsn']) as connection:
+            try:
+                cursor = connection.cursor()
+                cursor.execute("""CREATE TABLE IF NOT EXISTS ATTACHMENT (
+                ATTACHMENT_ID            INT             PRIMARY KEY     NOT NULL,
+                HYPE_ID                  INT                             NOT NULL REFERENCES HYPES (HYPE_ID) ON DELETE CASCADE,
+                ATTACHMENT_TYPE          VARCHAR(10)                     NOT NULL,
+                URL                      VARCHAR(100)                    NOT NULL
+                )""")
+                connection.commit()
+            except dbapi2.DatabaseError:
+                connection.rollback()
+            finally:
+               connection.commit()
+
     def list_attachments(self):
         with dbapi2.connect(self.app.config['dsn']) as connection:
              cursor = connection.cursor()
