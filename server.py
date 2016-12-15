@@ -17,6 +17,7 @@ from followers import followers
 from block import block
 from role import Role
 from attachment import Attachment
+from user import User
 
 app = Flask(__name__)
 app.rehype=Rehype(app)
@@ -26,6 +27,7 @@ app.role=Role(app)
 app.attachment=Attachment(app)
 app.block=block(app)
 app.contacts=Contact(app)
+app.user=User(app)
 
 def get_elephantsql_dsn(vcap_services):
     """Returns the data source name for ElephantSQL."""
@@ -57,8 +59,8 @@ def initialize_database():
         cursor.execute(query)
 
         query = """CREATE TABLE IF NOT EXISTS USERS (
-        USER_ID        INT PRIMARY KEY NOT NULL,
-        USERNAME       VARCHAR(50) NOT NULL,
+        USER_ID        SERIAL PRIMARY KEY NOT NULL,
+        USERNAME       VARCHAR(50) UNIQUE NOT NULL,
         NAME           VARCHAR(50) NOT NULL,
         SURNAME        VARCHAR(50) NOT NULL,
         EMAIL          VARCHAR(50) NOT NULL,
@@ -156,38 +158,13 @@ def counter_page():
 
 @app.route('/addUser', methods=['POST'])
 def add_user():
-    with dbapi2.connect(app.config['dsn']) as connection:
-        cursor = connection.cursor()
-        query = "SELECT USER_ID FROM USERS ORDER BY USER_ID DESC LIMIT 1"
-        cursor.execute(query)
-        userid = cursor.fetchone()
-        if userid is None:
-            userid = 1
-        else:
-            userid = userid[0]
-            userid = userid + 1
-
     username = request.form['username']
     name = request.form['name']
     surname = request.form['surname']
     email = request.form['email']
     password = request.form['password']
     #retype = request.form('retype')
-
-    with dbapi2.connect(app.config['dsn']) as connection:
-        cursor = connection.cursor()
-
-        query = """INSERT INTO USERS (
-        USER_ID,
-        USERNAME,
-        NAME,
-        SURNAME,
-        EMAIL,
-        PASSWORD,
-        FOLLOWERCOUNT)
-        VALUES ("""+ str(userid)  +""", '"""+ username  +"""', '"""+ name +"""', '"""+ surname +"""', '"""+ email +"""', '"""+ password +"""', 0)"""
-        cursor.execute(query)
-
+    app.user.Add_Users(username, name, surname, email, password)
     return redirect(url_for('home_page'))
 
 @app.route('/updateUser', methods=['POST'])
@@ -198,46 +175,19 @@ def update_user():
     surname = request.form['surname']
     email = request.form['email']
     password = request.form['password']
-    with dbapi2.connect(app.config['dsn']) as connection:
-        cursor = connection.cursor()
-        query = "SELECT USER_ID FROM USERS WHERE USERNAME = '" + pick + "'"
-        cursor.execute(query)
-        tmp = cursor.fetchone()
-        if tmp is not None:
-            query = """UPDATE USERS
-            SET USERNAME = '"""+ username +"""', NAME = '"""+ name +"""',
-            SURNAME = '"""+ surname +"""', EMAIL = '"""+ email +"""',
-            PASSWORD = '"""+ password +"""'
-            WHERE USERNAME = '""" + pick +"""'"""
-            cursor.execute(query)
+
+    app.user.Update_Users(pick, username, name, surname, email, password)
     return redirect(url_for('user_management_page'))
 
 @app.route('/deleteUser', methods=['POST'])
 def delete_user():
     pick = request.form['pick']
-    with dbapi2.connect(app.config['dsn']) as connection:
-        cursor = connection.cursor()
-        query = "SELECT USER_ID FROM USERS WHERE USERNAME = '" + pick + "'"
-        cursor.execute(query)
-        tmp = cursor.fetchone()
-        if tmp is not None:
-            query = "DELETE FROM USERS WHERE USERNAME = '" + pick + "'"
-            cursor.execute(query)
+    app.user.Delete_Users(pick)
     return redirect(url_for('user_management_page'))
 
 @app.route('/userManagement')
 def user_management_page():
-    with dbapi2.connect(app.config['dsn']) as connection:
-        try:
-            cursor = connection.cursor()
-            query = """ SELECT * FROM USERS ORDER BY USER_ID"""
-            cursor.execute(query)
-            users = cursor.fetchall()
-        except dbapi2.DatabaseError:
-            connection.rollback()
-        finally:
-            connection.commit()
-    return render_template('users.html', users = users)
+    return render_template('users.html', users = app.user.List_Users())
 
 @app.route('/roleManagement')
 def roles_page():
