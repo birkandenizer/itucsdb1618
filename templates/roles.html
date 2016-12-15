@@ -10,7 +10,7 @@
 			<form class="form-signup" action="/addRole" method=post>
 			<h2 class="form-signup-heading">Enter the information of the entry you want to add</h2>
 			<select name=userid class="form-control">
-				{% for userid, username in users %}
+				{% for userid, username, name, surname, email, password, followercount in users %}
 				<option value = {{ userid }} >ID: {{ userid }} Username: {{ username }} </option>
 				{% endfor %}
 			</select>
