@@ -1,5 +1,4 @@
 import psycopg2 as dbapi2
-from xapian import DatabaseError
 
 class User:
     def __init__(self, app):
