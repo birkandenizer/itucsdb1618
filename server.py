@@ -191,17 +191,7 @@ def user_management_page():
 
 @app.route('/roleManagement')
 def roles_page():
-    with dbapi2.connect(app.config['dsn']) as connection:
-        try:
-            cursor = connection.cursor()
-            query = """ SELECT USER_ID, USERNAME FROM USERS ORDER BY USER_ID"""
-            cursor.execute(query)
-            users = cursor.fetchall()
-        except dbapi2.DatabaseError:
-            connection.rollback()
-        finally:
-            connection.commit()
-    return render_template('roles.html', roles = app.role.List_Roles(), users=users)
+    return render_template('roles.html', roles = app.role.List_Roles(), users = app.user.List_Users())
 
 @app.route('/addRole', methods=['POST'])
 def add_role():
