@@ -1,0 +1,71 @@
+{% extends "layout.html" %}
+{% block title %}Hypeline{% endblock %}
+{% block content %}
+<head>
+    <link href="{{url_for('static', filename='hypeline.css')}}" rel="stylesheet" />
+</head>
+    <body>
+    <div class="section">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="col-md-3">
+              <a href="#"><img src="{{url_for('static', filename='avatar-1577909_1280.png')}}" class="img-responsive avatar"></a>
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+                <form class="form-horizontal" role="form">
+                  <div class="form-group textarea">
+                    <div class="col-sm-offset-0 col-sm-12">
+                      <textarea type="text" class="form-control textarea" id="hype" placeholder="What's Hype?"></textarea>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-sm-offset-0 col-sm-2">
+                      <button type="submit" class="btn btn-default">Photo</button>
+                    </div>
+                    <div class="col-sm-offset-0 col-sm-2">
+                      <button type="submit" class="btn btn-default">File</button>
+                    </div>
+                    <div class="col-sm-offset-6 col-sm-2">
+                      <button type="submit" class="btn btn-default">Hype!!</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            {% for hype_id, user_id, date, text, topic in hypes %}
+            <div class="col-sm-offset-3 col-sm-6">
+              <div class="row hype">
+                <div class="col-sm-offset-0 col-sm-2">
+                  <a href="#" class=""><img src="{{url_for('static', filename='avatar-1577909_1280.png')}}" class="img-responsive img-rounded hype-avatar"></a>
+                </div>
+                <div class="col-sm-9">
+                  <h4>{{ user_id }}</h4>
+                  <p>{{ text }}</p>
+                </div>
+              </div>
+              <div class="row buttons">
+				<div class="col-sm-offset-2 col-sm-1">
+					<button type="submit" class="btn btn-default">Comment</button>
+                </div>
+                <div class="col-sm-offset-1 col-sm-1">
+					<button type="submit" class="btn btn-default">Rehype</button>
+                </div>
+                <div class="col-sm-offset-1 col-sm-1">
+					<button type="submit" class="btn btn-default">Favorite</button>
+                </div>
+                <div class="col-sm-offset-1 col-sm-1">
+					<button type="submit" class="btn btn-default">Block</button>
+                </div>
+                <div class="col-sm-offset-0 col-sm-4">
+                </div>
+			  </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+{% endblock %}
