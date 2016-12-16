@@ -215,6 +215,20 @@ def delete_role():
     app.role.Delete_Roles(id)
     return redirect(url_for('roles_page'))
 
+@app.route('/hypeline')
+def hypeline_page():
+    with dbapi2.connect(app.config['dsn']) as connection:
+        try:
+            cursor = connection.cursor()
+            query = """ SELECT * FROM HYPES ORDER BY USER_ID"""
+            cursor.execute(query)
+            hypes = cursor.fetchall()
+        except dbapi2.DatabaseError:
+            connection.rollback()
+        finally:
+            connection.commit()
+    return render_template('hypeline.html', hypes = hypes)
+
 @app.route('/news')
 def news_page():
     return render_template('news.html')
