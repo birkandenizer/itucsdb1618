@@ -1,0 +1,92 @@
+{% extends "layout.html" %}
+{% block title %}HypeBlock Management{% endblock %}
+{% block content %}
+  <body>
+
+    <div class="container">
+
+    <div class="row">
+		<div class="col-sm-4">
+			<form class="form-signup" action="/addhypeblock" method=post>
+			<h2 class="form-signup-heading">Enter the information of the entry you want to add</h2>
+			<select name=userid class="form-control">
+				{% for userid, username, name, surname, email, password, followercount in users %}
+				<option value = {{ userid }} >ID: {{ userid }} Username: {{ username }} </option>
+				{% endfor %}
+			</select>
+			<select name=hypeid class="form-control">
+				{% for hypeid, userid, date, text, topic in hypes %}
+				<option value = {{ hypeid }} >HypeID: {{ hypeid }} </option>
+				{% endfor %}
+			</select>
+			<label for="reason" class="sr-only">Reason</label>
+			<input type="text" name=reason id="reason" class="form-control" placeholder="Reason" required autofocus>
+			<select name=personal class="form-control">
+				<option value = TRUE >Yes</option>
+				<option value = FALSE >No</option>
+			</select>
+			<button class="btn btn-lg btn-primary btn-block" type="submit">Add</button>
+			</form>
+		<br></div>
+		<div class="col-sm-4">
+			<form class="form-signup" action="/updatehypeblock" method=post>
+			<h2 class="form-signup-heading">Pick the id of the entry you want to update</h2>
+			<select name=id class="form-control">
+				{% for id, userid, hypeid, date, reason, personal in hypeblocks %}
+				<option value = {{ id }} >ID: {{ id }} </option>
+				{% endfor %}
+			</select>
+			<select name=hypeid class="form-control">
+				{% for hypeid, userid, date, text, topic in hypes %}
+				<option value = {{ hypeid }} >HypeID: {{ hypeid }} </option>
+				{% endfor %}
+			</select>
+			<label for="reason" class="sr-only">Reason</label>
+			<input type="text" name=reason id="reason" class="form-control" placeholder="Reason" required autofocus>
+			<select name=personal class="form-control">
+				<option value = TRUE >Yes</option>
+				<option value = FALSE >No</option>
+			</select>
+			<button class="btn btn-lg btn-primary btn-block" type="submit">Update</button>
+			</form>
+		<br></div>
+		<div class="col-sm-4">
+			<form class="form-signup" action="/deletehypeblock" method=post>
+			<h2 class="form-signup-heading">Pick the id of the entry you want to delete</h2>
+			<select name=id class="form-control">
+				{% for id, userid, hypeid, date, reason, personal in hypeblocks %}
+				<option value = {{ id }} >ID: {{ id }} </option>
+				{% endfor %}
+			</select>
+			<button class="btn btn-lg btn-primary btn-block" type="submit">Delete</button>
+			</form>
+		<br></div>
+	</div>
+	<div class="row">
+		<div class="col-sm-12">
+			<h1>All HypeBlock Table Entries in the Database</h1>
+			<table class="table table-bordered table-striped">
+				<tr>
+				<th class="col-sm-3"> ID </th>
+				<th class="col-sm-3"> UserID </th>
+				<th class="col-sm-3"> HypeID </th>
+				<th class="col-sm-3"> Reason </th>
+				<th class="col-sm-3"> Personal </th>
+				<th class="col-sm-3"> Date </th>
+				</tr>
+				{% for id, userid, hypeid, date, reason, personal in hypeblocks %}
+				<tr>
+				<td> {{ id }}</td>
+				<td> {{ userid }} </td>
+				<td> {{ hypeid }} </td>
+				<td> {{ reason }} </td>
+				<td> {{ personal }} </td>
+				<td> {{ date }} </td>
+				</tr>
+				{% endfor %}
+			</table>
+		</div>
+	</div>
+    </div>
+  </body>
+{% endblock %}
