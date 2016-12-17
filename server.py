@@ -118,7 +118,6 @@ def initialize_database():
         app.rehype.initialize_Rehype()
         app.favorite.initialize_Favorite()
         app.trending.initialize_Trending()
-        app.hype.Drop_Comments()
         app.hype.Initialize_Comments()
 
     return redirect(url_for('home_page'))
@@ -149,6 +148,7 @@ def drop_database():
         app.favorite.drop_Favorite()
         app.rehype.drop_Rehype()
         app.trending.drop_Trending()
+        app.hype.Drop_Comments()
 
         cursor = connection.cursor()
 
