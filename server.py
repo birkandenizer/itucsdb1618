@@ -119,6 +119,7 @@ def initialize_database():
         app.favorite.initialize_Favorite()
         app.trending.initialize_Trending()
         app.hype.Initialize_Comments()
+        app.hype.Initialize_Tags()
 
     return redirect(url_for('home_page'))
 
@@ -150,6 +151,7 @@ def drop_database():
         app.trending.drop_Trending()
         app.hype.Drop_Comments()
         app.hype.Drop_Hypes()
+        app.hype.Drop_Tags()
 
         cursor = connection.cursor()
 
@@ -551,6 +553,7 @@ def hype():
 
     app.hype.Add_Hype(user_id, t, text, topic)
     hype_id=app.hype.Get_Hype_ID(user_id, t, text, topic)
+    app.hype.Add_Tags(hype_id, t, tags)
 
     return render_template("attachment.html", hype_id=hype_id)
 
