@@ -550,6 +550,7 @@ def hype():
     t = datetime.date.today()
     text = request.form['hype_text']
     topic = request.form['topic']
+    tags = request.form['hype_tag']
 
     app.hype.Add_Hype(user_id, t, text, topic)
     hype_id=app.hype.Get_Hype_ID(user_id, t, text, topic)
