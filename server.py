@@ -12,6 +12,7 @@ from flask.helpers import url_for
 
 from rehype import Rehype
 from favorite import Favorite
+from trending import Trending
 from contacts import Contact
 from followers import followers
 from block import block
@@ -23,6 +24,7 @@ from hypeline import Hypeline
 app = Flask(__name__)
 app.rehype=Rehype(app)
 app.favorite=Favorite(app)
+app.trending=Trending(app)
 app.followers=followers(app)
 app.role=Role(app)
 app.attachment=Attachment(app)
@@ -100,25 +102,6 @@ def initialize_database():
         )"""
         cursor.execute(query)
 
-        query = """ CREATE TABLE IF NOT EXISTS REHYPES(
-        HYPE_ID INTEGER NOT NULL REFERENCES HYPES (HYPE_ID) ON DELETE CASCADE,
-        USER_ID INTEGER NOT NULL REFERENCES USERS (USER_ID) ON DELETE CASCADE,
-        COMMENT VARCHAR(200),
-        DATE DATE NOT NULL,
-        PRIMARY KEY (HYPE_ID, USER_ID)
-        )"""
-        cursor.execute(query)
-
-        query = """ CREATE TABLE IF NOT EXISTS FAVORITES(
-        ID SERIAL PRIMARY KEY,
-        HYPE_ID INTEGER NOT NULL REFERENCES HYPES (HYPE_ID) ON DELETE CASCADE,
-        USER_ID INTEGER NOT NULL REFERENCES USERS (USER_ID) ON DELETE CASCADE,
-        DATE DATE NOT NULL,
-        RATE INTEGER NOT NULL,
-        UNIQUE(HYPE_ID,USER_ID)
-        )"""
-        cursor.execute(query)
-
         query = """ CREATE TABLE IF NOT EXISTS FOLLOWER(
         PERSON_ID INTEGER NOT NULL REFERENCES USERS (USER_ID) ON DELETE CASCADE,
         FOLLOWER_ID INTEGER NOT NULL REFERENCES USERS (USER_ID) ON DELETE CASCADE,
@@ -137,10 +120,14 @@ def initialize_database():
         )"""
         cursor.execute(query)
         
+        connection.commit()
+        
         app.attachment.initialize_table()
         app.contacts.initialize_table()
-
-        connection.commit()
+        
+        app.rehype.initialize_Rehype()
+        app.favorite.initialize_Favorite()
+        app.trending.initialize_Trending()
 
     return redirect(url_for('home_page'))
 
@@ -287,7 +274,14 @@ def technology_page():
 def music_page():
     hypespage = app.rehype.List_Hypes()
     hypespageUsername = app.rehype.List_Users()
-    return render_template('music.html', hypespage = hypespage, hypespageUsername = hypespageUsername)
+    return render_template('music.html', hypespage = hypespage, hypespageUsername = hypespageUsername, trending=trending)
+
+@app.route('/trending/<hype_id>')
+def music_page_trending(hype_id):
+    hypespage = app.trending.List_Trending_Hypes(hype_id)
+    hypespageUsername = app.rehype.List_Users()
+    trending = app.trending.List_Trending()
+    return render_template('music.html', hypespage = hypespage, hypespageUsername = hypespageUsername, trending=trending)
 
 @app.route('/reypeslist')
 def rehypes_list():
@@ -306,6 +300,13 @@ def rehypes_page():
         hype_id = request.form['hype_id']
         user_ids = request.form['user_ids']
         app.rehype.Update_Rehype(old_user_id, hype_id, comment, user_ids)
+        element = app.trending.Decision_Add(hype_id)
+        if element != 0:
+            app.trending.Add_Trending(element[0],element[1], element[2])
+        element = False
+        element = app.trending.Decision_Update_Add(hype_id)
+        if element == True:
+            app.trending.Update_Trending(hype_id, 1)
         rehypesUser = app.rehype.List_Users()
         return render_template('rehypes_list.html', rehypespage = app.rehype.List_Rehypes(), rehypesUser = rehypesUser)
 
@@ -315,9 +316,17 @@ def music_page_add(user_id, hype_id):
     rehypesUser = app.rehype.List_Users()
     return render_template('rehypes.html', rehypespage = app.rehype.List_Rehypes(), rehypesUser = rehypesUser)
 
-@app.route('/music/delete/<user_id>')
-def music_page_delete(user_id):
-    app.rehype.Delete_Rehype(user_id)
+@app.route('/music/delete/<user_id>/<hype_id>')
+def music_page_delete(user_id, hype_id):
+    hype_ids = app.rehype.Delete_Rehype(user_id, hype_id)
+    element = False
+    element = app.trending.Decision_Delete(hype_ids)
+    if element == True:
+        app.trending.Delete_Trending(hype_ids)
+    element = False
+    element = app.trending.Decision_Update_Del(hype_ids)
+    if element == True:
+        app.trending.Update_Trending(hype_ids, 2)
     rehypesUser = app.rehype.List_Users()
     return render_template('rehypes_list.html', rehypespage = app.rehype.List_Rehypes(), rehypesUser = rehypesUser)
 
