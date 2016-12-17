@@ -21,7 +21,7 @@ from rehype import Rehype
 from role import Role
 from trending import Trending
 from user import User
-
+from hypeblock import Hypeblock
 
 app = Flask(__name__)
 app.attachment=Attachment(app)
@@ -35,6 +35,7 @@ app.rehype=Rehype(app)
 app.role=Role(app)
 app.trending=Trending(app)
 app.user=User(app)
+app.hypeblock=Hypeblock(app)
 
 
 def get_elephantsql_dsn(vcap_services):
@@ -126,6 +127,7 @@ def initialize_database():
         
         connection.commit()
         
+        app.hypeblock.initialize_table()
         app.attachment.initialize_table()
         app.contacts.initialize_table()
         app.picture.initialize_table()
@@ -153,7 +155,8 @@ def drop_database():
         cursor.execute(query)
 
         connection.commit()
-
+        
+        app.hypeblock.drop_table()
         app.attachment.drop_table()
         app.contacts.drop_table()
         app.picture.drop_table()
@@ -249,6 +252,44 @@ def delete_role():
     id = request.form['id']
     app.role.Delete_Roles(id)
     return redirect(url_for('roles_page'))
+
+@app.route('/hypeblockManagement')
+def hypeblock_page():
+    with dbapi2.connect(app.config['dsn']) as connection:
+        try:
+            cursor = connection.cursor()
+            query = """ SELECT * FROM HYPES ORDER BY HYPE_ID"""
+            cursor.execute(query)
+            hypes = cursor.fetchall()
+        except dbapi2.DatabaseError:
+            connection.rollback()
+        finally:
+            connection.commit()
+    return render_template('hypeblock.html', hypeblocks = app.hypeblock.List_BlockedHypes(), users = app.user.List_Users(), hypes = hypes)
+
+@app.route('/addhypeblock', methods=['POST'])
+def add_hypeblock():
+    id = request.form['userid']
+    hypeid = request.form['hypeid']
+    reason = request.form['reason']
+    personal = request.form['personal']
+    app.hypeblock.Add_BlockedHypes(id, hypeid, reason, personal)
+    return redirect(url_for('hypeblock_page'))
+
+@app.route('/updatehypeblock', methods=['POST'])
+def update_hypeblock():
+    id = request.form['id']
+    hypeid = request.form['hypeid']
+    reason = request.form['reason']
+    personal = request.form['personal']
+    app.hypeblock.Update_BlockedHypes(id, hypeid, reason, personal)
+    return redirect(url_for('hypeblock_page'))
+
+@app.route('/deletehypeblock', methods=['POST'])
+def delete_hypeblock():
+    id = request.form['id']
+    app.hypeblock.Delete_BlockedHypes(id)
+    return redirect(url_for('hypeblock_page'))
 
 @app.route('/hypeline')
 def hypeline_page():
