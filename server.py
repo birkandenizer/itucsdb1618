@@ -23,6 +23,7 @@ from trending import Trending
 from user import User
 from hypeblock import Hypeblock
 from dislike import dislike
+from hypes import Hype
 
 app = Flask(__name__)
 app.attachment=Attachment(app)
@@ -38,6 +39,7 @@ app.trending=Trending(app)
 app.user=User(app)
 app.hypeblock=Hypeblock(app)
 app.dislike=dislike(app)
+app.hype=Hype(app)
 
 
 def get_elephantsql_dsn(vcap_services):
@@ -88,27 +90,6 @@ def initialize_database():
         )"""
         cursor.execute(query)
 
-        query = """CREATE TABLE IF NOT EXISTS HYPES (
-        HYPE_ID         SERIAL        PRIMARY KEY    NOT NULL,
-        USER_ID         INT                          NOT NULL REFERENCES USERS (USER_ID) ON DELETE CASCADE,
-        DATE            DATE                         NOT NULL,
-        TEXT            VARCHAR(150)                 NOT NULL,
-        TOPIC           VARCHAR(20)                  NOT NULL
-        )"""
-        cursor.execute(query)
-
-        query = """DROP TABLE IF EXISTS COMMENTS"""
-        cursor.execute(query)
-
-        query = """CREATE TABLE IF NOT EXISTS COMMENTS (
-        COMMENT_ID      SERIAL    PRIMARY KEY   NOT NULL,
-        HYPE_ID         INT       REFERENCES    HYPES(HYPE_ID)    ON DELETE CASCADE,
-        USER_ID         INT                     NOT NULL,
-        DATE            DATE                    NOT NULL,
-        TEXT            VARCHAR(150)            NOT NULL
-        )"""
-        cursor.execute(query)
-
         query = """ CREATE TABLE IF NOT EXISTS FOLLOWER(
         PERSON_ID INTEGER NOT NULL REFERENCES USERS (USER_ID) ON DELETE CASCADE,
         FOLLOWER_ID INTEGER NOT NULL REFERENCES USERS (USER_ID) ON DELETE CASCADE,
@@ -129,6 +110,7 @@ def initialize_database():
         
         connection.commit()
         
+        app.hype.Initialize_Hypes()
         app.hypeblock.initialize_table()
         app.attachment.initialize_table()
         app.contacts.initialize_table()
@@ -136,6 +118,8 @@ def initialize_database():
         app.rehype.initialize_Rehype()
         app.favorite.initialize_Favorite()
         app.trending.initialize_Trending()
+        app.hype.Drop_Comments()
+        app.hype.Initialize_Comments()
 
     return redirect(url_for('home_page'))
 
@@ -557,50 +541,20 @@ def about_page():
 
 @app.route('/hype')
 def hype_page():
-    with dbapi2.connect(app.config['dsn']) as connection:
-        try:
-            cursor = connection.cursor()
-            query = """ SELECT * FROM HYPES ORDER BY USER_ID"""
-            cursor.execute(query)
-            hypes = cursor.fetchall()
-        except dbapi2.DatabaseError:
-            connection.rollback()
-        finally:
-            connection.commit()
-
+    hypes=app.hype.Select_All_Hypes()
     return render_template('hype.html', hypes = hypes)
 
 @app.route('/addHype', methods=['POST'])
 def hype():
-    with dbapi2.connect(app.config['dsn']) as connection:
-        cursor = connection.cursor()
-        query = "SELECT HYPE_ID FROM HYPES ORDER BY HYPE_ID DESC LIMIT 1"
-        cursor.execute(query)
-        hype_id = cursor.fetchone()
-        if hype_id is None:
-            hype_id = 1
-        else:
-            hype_id = hype_id[0]
-            hype_id = hype_id + 1
-
     user_id = request.form['user_id']
     t = datetime.date.today()
     text = request.form['hype_text']
     topic = request.form['topic']
 
-    with dbapi2.connect(app.config['dsn']) as connection:
-        cursor = connection.cursor()
+    app.hype.Add_Hype(user_id, t, text, topic)
+    hype_id=app.hype.Get_Hype_ID(user_id, t, text, topic)
 
-        query = """INSERT INTO HYPES(
-        HYPE_ID,
-        USER_ID,
-        DATE,
-        TEXT,
-        TOPIC)
-        VALUES("""+ str(hype_id) +", "+ str(user_id) +",'" + str(t) +"','"+ text +"','"+ topic +"' )"
-        cursor.execute(query)
-
-    return render_template("attachment.html", hype_id = hype_id)
+    return render_template("attachment.html", hype_id=hype_id)
 
 @app.route('/commentHype', methods=['POST'])
 def comment_hype():
@@ -608,15 +562,7 @@ def comment_hype():
     user_id = request.form['comment_user_id']
     t = datetime.date.today()
     text = request.form['comment_text']
-    with dbapi2.connect(app.config['dsn']) as connection:
-        cursor = connection.cursor()
-        query = """INSERT INTO COMMENTS(
-        HYPE_ID,
-        USER_ID,
-        DATE,
-        TEXT)
-        VALUES("""+ str(hype_id) +", "+ str(user_id) +",'" + str(t) +"','"+ text + "' )"
-        cursor.execute(query)
+    app.hype.Comment_Hype(hype_id, user_id, t, text)
 
     return redirect(url_for('hype_page'))
 
