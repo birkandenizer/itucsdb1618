@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+{% block title %}DISLIKES TABLE{% endblock %}
+{% block content %}
+
+<div class="jumbotron">
+        <h2>DISLIKES TABLE</h2>
+
+
+
+		<table class="table table-bordered table-striped">
+			<tr>
+			<th class="col-sm-2"> CANCEL DISLIKE </th>
+			<th class="col-sm-2"> HYPE_ID </th>
+			<th class="col-sm-2"> USER_ID </th>
+			<th class="col-sm-2"> DATE </th>
+			<th class="col-sm-2"> REASON </th>
+			<th class="col-sm-2"> UPDATE </th>
+			</tr>
+
+
+			{% for ID, hype_id, user_id, date, reason  in users_dislike %}
+			<tr>
+				<td>
+				<a href="{{ url_for('dislike_cancel', hype_id=hype_id, user_id=user_id)}} " style="text-decoration:none;" class="btn btn-danger btn-sm" role="button"> <span class="glyphicon glyphicon-remove"></span> CANCEL DISLIKE </a>
+				</td>
+				<td> {{ hype_id }}</td>
+				<td> {{ user_id }} </td>
+				<td> {{ date }} </td>
+				<td> {{ reason }} </td>
+				<td>
+					<form role="form" action="/dislike_reason_update" method="post" name="group_edit" class="form-horizontal">
+						<div class="form-group">
+							<label for="reason" class="control-label col-sm-0"></label>
+							<div class="col-sm-10">
+								<input type="text" name="reason" requeired autofocus></input>
+							</div>
+							<div class="col-sm-10">
+								<input type="hidden" name="hype_id" required autofocus value="{{hype_id}}"/>
+							</div>
+							<div class="col-sm-10">
+								<input type="hidden" name="user_id" required autofocus value="{{user_id}}"/>
+							</div>
+							<div class="col-sm-offset-1 col-sm-12">
+								<button type="submit" name="save" class="btn btn-primary">Update Reason</button>
+							</div>
+						</div>
+		 	     	</form>
+				</td>
+			</tr>
+
+
+
+
+
+			{% endfor %}
+		</table>
+
+		<a href="{{ url_for('dislikes_select')}}" button type="button" class="btn btn-primary btn-lg btn-block">Back to Sport Page</a></button>
+</div>
+
+
+{% endblock %}
