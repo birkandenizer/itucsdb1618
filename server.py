@@ -131,6 +131,47 @@ def initialize_database():
 
     return redirect(url_for('home_page'))
 
+@app.route('/dropitucsdb1618')
+def drop_database():
+    with dbapi2.connect(app.config['dsn']) as connection:
+        cursor = connection.cursor()
+
+        query = """DROP TABLE IF EXISTS ROLES"""
+        cursor.execute(query)
+
+        query = """DROP TABLE IF EXISTS COMMENTS"""
+        cursor.execute(query)
+
+        query = """DROP TABLE IF EXISTS FOLLOWER"""
+        cursor.execute(query)
+
+        query = """DROP TABLE IF EXISTS BLOCKED"""
+        cursor.execute(query)
+
+        query = """DROP TABLE IF EXISTS ATTACHMENT"""
+        cursor.execute(query)
+
+        query = """DROP TABLE IF EXISTS CONTACT"""
+        cursor.execute(query)
+
+        connection.commit()
+
+        app.favorite.drop_Favorite()
+        app.rehype.drop_Rehype()
+        app.trending.drop_Trending()
+
+        cursor = connection.cursor()
+
+        query = """DROP TABLE IF EXISTS HYPES"""
+        cursor.execute(query)
+
+        query = """DROP TABLE IF EXISTS USERS"""
+        cursor.execute(query)
+
+        connection.commit()
+
+    return redirect(url_for('home_page'))
+
 @app.route('/count')
 def counter_page():
     with dbapi2.connect(app.config['dsn']) as connection:
