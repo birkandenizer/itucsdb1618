@@ -317,6 +317,7 @@ def technology_page():
 def music_page():
     hypespage = app.rehype.List_Hypes()
     hypespageUsername = app.rehype.List_Users()
+    trending = app.trending.List_Trending()
     return render_template('music.html', hypespage = hypespage, hypespageUsername = hypespageUsername, trending=trending)
 
 @app.route('/trending/<hype_id>')
