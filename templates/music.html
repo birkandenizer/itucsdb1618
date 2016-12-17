@@ -4,19 +4,29 @@
 	<div class="container">
 
 		<div class="row">
-			<div class="col-sm-10">
+			<div class="col-sm-8">
 				<div class="page-header">
 	        		<h1>Music</h1>
 				</div>
 			</div>
 			<div class="col-sm-2">
-				<button type="button" class="btn btn-lg btn-default">New</button>
+				<a href="{{ url_for('hype_page') }}" class="btn btn-default btn-lg active" role="button">New</a>
 			<p></p>
+			</div>
+			<div class="col-sm-2">
+				<div class="panel panel-default">
+					<h1 class="panel-title"><b> Trending Hypes</b></h1>
+					<div class="panel-body">
+						{% for trending_id, hype_id, tag, date, count in trending %}
+							<p><a href="{{ url_for('music_page_trending', hype_id=hype_id) }}" role="button">{{tag}}</a></p>
+						{% endfor %}
+					</div>
+				</div>
 			</div>
 		</div>
 		{% for hype_id, user_id, date, text, topic in hypespage %}
       	<div class="row">
-	        <div class="col-sm-12">
+	        <div class="col-sm-10">
 	          <div class="panel panel-default">
 	            <div class="panel-heading">
 	            {% for user2_id, username, name, surname, email, password, count in hypespageUsername %}
@@ -59,6 +69,8 @@
 	        </div>
 		</div>
 		{% endfor %}
+	</div>
+	<div class="row">
 		<a href="{{ url_for('rehypes_list') }}">Rehypes List</a><br>
 		<a href="{{ url_for('favorites_select') }}">Favorites List</a>
 	</div>
