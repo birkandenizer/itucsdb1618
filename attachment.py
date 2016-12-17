@@ -19,6 +19,17 @@ class Attachment:
                 connection.rollback()
             finally:
                connection.commit()
+            
+    def drop_table(self):
+        with dbapi2.connect(self.app.config['dsn']) as connection:
+            try:
+                cursor = connection.cursor()
+                query = """DROP TABLE IF EXISTS ATTACHMENT"""
+                cursor.execute(query)
+            except dbapi2.DatabaseError:
+                connection.rollback()
+            finally:
+               connection.commit()
 
     def list_attachments(self):
         with dbapi2.connect(self.app.config['dsn']) as connection:
