@@ -5,6 +5,23 @@ class Rehype:
     def __init__(self, app):
         self.app = app
 
+    def initialize_Rehype(self):
+        with dbapi2.connect(self.app.config['dsn']) as connection:
+            try:
+                cursor = connection.cursor()
+                cursor.execute(""" CREATE TABLE IF NOT EXISTS REHYPES(
+                HYPE_ID INTEGER NOT NULL REFERENCES HYPES (HYPE_ID) ON DELETE CASCADE,
+                USER_ID INTEGER NOT NULL REFERENCES USERS (USER_ID) ON DELETE CASCADE,
+                COMMENT VARCHAR(200),
+                DATE DATE NOT NULL,
+                PRIMARY KEY (HYPE_ID, USER_ID)
+                )""")
+                connection.commit()
+            except dbapi2.DatabaseError:
+                connection.rollback()
+            finally:
+               connection.commit()
+
     def List_Hypes(self):
         with dbapi2.connect(self.app.config['dsn']) as connection:
              cursor = connection.cursor()
@@ -36,18 +53,24 @@ class Rehype:
             finally:
                connection.commit()
 
-    def Delete_Rehype(self, user_id):
+    def Delete_Rehype(self, user_id, hype_ids):
         with dbapi2.connect(self.app.config['dsn']) as connection:
             try:
                 cursor = connection.cursor()
-                query =  """DELETE FROM REHYPES WHERE (USER_ID = %s)"""
-                cursor.execute(query, (user_id,))
+                query = """ SELECT HYPE_ID FROM REHYPES WHERE USER_ID = %s"""
+                cursor.execute(query,(user_id))
+                hype_id = cursor.fetchall()
+                cursor = connection.cursor()
+                query =  """DELETE FROM REHYPES WHERE (USER_ID = %s) AND (HYPE_ID = %s)"""
+                cursor.execute(query, (user_id, hype_ids,))
                 connection.commit()
                 cursor.close()
             except dbapi2.DatabaseError:
                 connection.rollback()
+                return hype_id[0][0]
             finally:
                connection.commit()
+               return hype_id[0][0]
 
     def Update_Rehype(self, old_user_id, hype_id, comment, user_ids):
         with dbapi2.connect(self.app.config['dsn']) as connection:

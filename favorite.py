@@ -5,6 +5,24 @@ class Favorite:
     def __init__(self, app):
         self.app = app
 
+    def initialize_Favorite(self):
+        with dbapi2.connect(self.app.config['dsn']) as connection:
+            try:
+                cursor = connection.cursor()
+                cursor.execute(""" CREATE TABLE IF NOT EXISTS FAVORITES(
+                ID SERIAL PRIMARY KEY,
+                HYPE_ID INTEGER NOT NULL REFERENCES HYPES (HYPE_ID) ON DELETE CASCADE,
+                USER_ID INTEGER NOT NULL REFERENCES USERS (USER_ID) ON DELETE CASCADE,
+                DATE DATE NOT NULL,
+                RATE INTEGER NOT NULL,
+                UNIQUE(HYPE_ID,USER_ID)
+                )""")
+                connection.commit()
+            except dbapi2.DatabaseError:
+                connection.rollback()
+            finally:
+               connection.commit()
+
     def List_Favorites(self, user_ids):
         with dbapi2.connect(self.app.config['dsn']) as connection:
              cursor = connection.cursor()
