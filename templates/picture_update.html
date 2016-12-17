@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block title %}Update Picture{% endblock %}
+{% block content %}
+
+<head>
+    <!-- Bootstrap core CSS -->
+    <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" />
+    <link href="{{url_for('static', filename='contact.css')}}" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+		<div class="row">
+			<div class="col-sm-4">
+  				<form class="form-signin" action="/user/picture/update/<picture_id>" method=post>
+					<h2 class="form-signin-heading">Edit Picture</h2>
+                	<input type="hidden" name="picture_id" value="{{picture_id}}" />
+					<label for="url" class="sr-only">URL</label>
+					<input type="text" name="url" id="url" class="form-control" placeholder="URL" required autofocus>
+					<button class="btn btn-lg btn-primary btn-block" type="submit">Edit!</button>
+      			</form>
+			</div>
+		</div>
+    </div> <!-- /container -->
+  </body>
+{% endblock %}

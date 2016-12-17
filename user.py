@@ -25,6 +25,22 @@ class User:
             finally:
                 connection.commit()
 
+    def Get_User(self, username):
+        with dbapi2.connect(self.app.config['dsn']) as connection:
+            try:
+                cursor = connection.cursor()
+                #query = """ SELECT USER_ID FROM USERS WHERE USERNAME = %s """
+                query = "SELECT USER_ID FROM USERS WHERE USERNAME = '" + username + "'"
+                #cursor.execute(query, (username))
+                cursor.execute(query)
+                user_id = cursor.fetchall()
+                #print(user_id)
+                return user_id
+            except dbapi2.DatabaseError:
+                connection.rollback()
+            finally:
+               connection.commit()
+
     def Delete_Users(self, pick):
         with dbapi2.connect(self.app.config['dsn']) as connection:
             try:
