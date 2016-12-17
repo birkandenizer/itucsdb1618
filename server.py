@@ -152,14 +152,11 @@ def drop_database():
         query = """DROP TABLE IF EXISTS BLOCKED"""
         cursor.execute(query)
 
-        query = """DROP TABLE IF EXISTS ATTACHMENT"""
-        cursor.execute(query)
-
-        query = """DROP TABLE IF EXISTS CONTACT"""
-        cursor.execute(query)
-
         connection.commit()
 
+        app.attachment.drop_table()
+        app.contacts.drop_table()
+        app.picture.drop_table()
         app.favorite.drop_Favorite()
         app.rehype.drop_Rehype()
         app.trending.drop_Trending()
