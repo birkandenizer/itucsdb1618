@@ -10,28 +10,32 @@ from flask import redirect
 from flask import render_template
 from flask.helpers import url_for
 
-from rehype import Rehype
-from favorite import Favorite
-from trending import Trending
-from contacts import Contact
-from followers import followers
-from block import block
-from role import Role
 from attachment import Attachment
-from user import User
+from contacts import Contact
+from block import block
+from favorite import Favorite
+from followers import followers
 from hypeline import Hypeline
+from picture import Picture
+from rehype import Rehype
+from role import Role
+from trending import Trending
+from user import User
+
 
 app = Flask(__name__)
-app.rehype=Rehype(app)
-app.favorite=Favorite(app)
-app.trending=Trending(app)
-app.followers=followers(app)
-app.role=Role(app)
 app.attachment=Attachment(app)
 app.block=block(app)
 app.contacts=Contact(app)
-app.user=User(app)
+app.favorite=Favorite(app)
+app.followers=followers(app)
 app.hypeline=Hypeline(app)
+app.picture=Picture(app)
+app.rehype=Rehype(app)
+app.role=Role(app)
+app.trending=Trending(app)
+app.user=User(app)
+
 
 def get_elephantsql_dsn(vcap_services):
     """Returns the data source name for ElephantSQL."""
@@ -124,7 +128,7 @@ def initialize_database():
         
         app.attachment.initialize_table()
         app.contacts.initialize_table()
-        
+        app.picture.initialize_table()
         app.rehype.initialize_Rehype()
         app.favorite.initialize_Favorite()
         app.trending.initialize_Trending()
@@ -197,7 +201,9 @@ def add_user():
     password = request.form['password']
     #retype = request.form('retype')
     app.user.Add_Users(username, name, surname, email, password)
-    return redirect(url_for('home_page'))
+    user_id=app.user.Get_User(username)
+    user_id = user_id[0][0]
+    return render_template("picture.html", user_id = user_id)
 
 @app.route('/updateUser', methods=['POST'])
 def update_user():
@@ -611,6 +617,49 @@ def update_attachment(attachment_id):
 def delete_attachment(attachment_id):
     app.attachment.delete_attachment(attachment_id)
     return render_template('attachments.html' , attachmentspage = app.attachment.list_attachments())
+
+@app.route('/user/picture')
+def picture_page():
+    return render_template('picture.html')
+
+@app.route('/user/picture/add',methods=['POST'])
+def add_picture():
+    with dbapi2.connect(app.config['dsn']) as connection:
+            cursor = connection.cursor()
+            query = "SELECT PICTURE_ID FROM PICTURE ORDER BY PICTURE_ID DESC LIMIT 1"
+            cursor.execute(query)
+            picture_id = cursor.fetchone()
+            if  picture_id is None:
+                picture_id = 1
+            else:
+                picture_id = picture_id[0]
+                picture_id = picture_id + 1
+
+            user_id = request.form['user_id']
+            url = request.form['url']
+
+    app.picture.add_picture(picture_id,user_id,url)
+    return redirect(url_for('list_picture'))
+
+@app.route('/user/picture/list',methods=['GET'])
+def list_picture():
+    return render_template('pictures.html',picturespage = app.picture.list_pictures())
+
+@app.route('/user/picture/update/<picture_id>',methods=['GET', 'POST'])
+def update_picture(picture_id):
+    if request.method == 'GET':
+        return render_template('picture_update.html', picture_id = picture_id)
+
+    else:
+        attachment_id=request.form['attachment_id']
+        url=request.form['url']
+        app.picture.update_picture(picture_id,url)
+        return redirect(url_for('list_picture'))
+
+@app.route('/user/picture/delete/<picture_id>')
+def delete_picture(picture_id):
+    app.picture.delete_picture(picture_id)
+    return render_template('pictures.html' , picturespage = app.picture.list_pictures())
 
 if __name__ == '__main__':
     VCAP_APP_PORT = os.getenv('VCAP_APP_PORT')
