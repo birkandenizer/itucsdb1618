@@ -23,6 +23,17 @@ class Favorite:
             finally:
                connection.commit()
 
+    def drop_Favorite(self):
+        with dbapi2.connect(self.app.config['dsn']) as connection:
+            try:
+                cursor = connection.cursor()
+                query = """DROP TABLE IF EXISTS FAVORITES"""
+                cursor.execute(query)
+            except dbapi2.DatabaseError:
+                connection.rollback()
+            finally:
+               connection.commit()
+
     def List_Favorites(self, user_ids):
         with dbapi2.connect(self.app.config['dsn']) as connection:
              cursor = connection.cursor()
