@@ -169,6 +169,8 @@ def drop_database():
         cursor.execute(query)
 
         connection.commit()
+        
+        initialize_database()
 
     return redirect(url_for('home_page'))
 
