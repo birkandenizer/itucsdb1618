@@ -97,7 +97,7 @@ class Hype:
         with dbapi2.connect(self.app.config['dsn']) as connection:
             try:
                 cursor = connection.cursor()
-                query = "SELECT * FROM HYPES ORDER BY USER_ID"
+                query = "SELECT * FROM HYPES ORDER BY HYPE_ID"
                 cursor.execute(query)
                 hypes = cursor.fetchall()
                 return hypes
