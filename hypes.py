@@ -10,7 +10,7 @@ class Hype:
                 cursor = connection.cursor()
                 query = """CREATE TABLE IF NOT EXISTS HYPES (
                            HYPE_ID         SERIAL        PRIMARY KEY    NOT NULL,
-                           USER_ID         INT                          NOT NULL REFERENCES USERS (USER_ID) ON DELETE CASCADE,
+                           USER_ID         INT                          REFERENCES USERS (USER_ID) ON DELETE CASCADE,
                            DATE            DATE                         NOT NULL,
                            TEXT            VARCHAR(150)                 NOT NULL,
                            TOPIC           VARCHAR(20)                  NOT NULL
@@ -57,6 +57,35 @@ class Hype:
             try:
                 cursor = connection.cursor()
                 query = "DROP TABLE IF EXISTS COMMENTS"
+                cursor.execute(query)
+                connection.commit()
+            except dbapi2.DatabaseError:
+                connection.rollback()
+            finally:
+               connection.commit()
+
+    def Initialize_Tags(self):
+        with dbapi2.connect(self.app.config['dsn']) as connection:
+            try:
+                cursor = connection.cursor()
+                query = """CREATE TABLE IF NOT EXISTS TAGS (
+                           TAG_ID          SERIAL        PRIMARY KEY    NOT NULL,
+                           HYPE_ID         INT           REFERENCES     HYPES(HYPE_ID)    ON DELETE CASCADE,
+                           DATE            DATE                         NOT NULL,
+                           TAGS            VARCHAR(50)                  NOT NULL
+                           )"""
+                cursor.execute(query)
+                connection.commit()
+            except dbapi2.DatabaseError:
+                connection.rollback()
+            finally:
+               connection.commit()
+
+    def Drop_Tags(self):
+        with dbapi2.connect(self.app.config['dsn']) as connection:
+            try:
+                cursor = connection.cursor()
+                query = "DROP TABLE IF EXISTS TAGS"
                 cursor.execute(query)
                 connection.commit()
             except dbapi2.DatabaseError:
@@ -116,6 +145,21 @@ class Hype:
                 DATE,
                 TEXT)
                 VALUES("""+ str(hypeID) +", "+ str(userID) +",'" + str(t) +"','"+ text + "' )"
+                cursor.execute(query)
+            except dbapi2.DatabaseError:
+                connection.rollback()
+            finally:
+                connection.commit()
+
+    def Add_Tags(self, hypeID, t, tags):
+        with dbapi2.connect(self.app.config['dsn']) as connection:
+            try:
+                cursor = connection.cursor()
+                query = """INSERT INTO TAGS(
+                           HYPE_ID,
+                           DATE,
+                           TAGS)
+                           VALUES("""+ str(hypeID) +",'" + str(t) +"','"+ tags +"' )"
                 cursor.execute(query)
             except dbapi2.DatabaseError:
                 connection.rollback()
