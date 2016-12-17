@@ -22,6 +22,7 @@ from role import Role
 from trending import Trending
 from user import User
 from hypeblock import Hypeblock
+from dislike import dislike
 
 app = Flask(__name__)
 app.attachment=Attachment(app)
@@ -36,6 +37,7 @@ app.role=Role(app)
 app.trending=Trending(app)
 app.user=User(app)
 app.hypeblock=Hypeblock(app)
+app.dislike=dislike(app)
 
 
 def get_elephantsql_dsn(vcap_services):
@@ -460,6 +462,43 @@ def favorite_add():
         hypespageUsername = app.rehype.List_Users()
         return render_template('music.html', hypespage = app.rehype.List_Hypes(), hypespageUsername = hypespageUsername)
 
+@app.route('/dislikes', methods=['GET','POST'])
+def dislikes_select():
+    if request.method =='GET':
+        return render_template('dislikes.html', hypes = app.dislike.List_Hypes(), users = app.dislike.select_users())
+    else:
+        user_ids = request.form['user_ids']
+        dislikes = app.dislike.List_Dislikes(user_ids)
+        rehypesUser = app.rehype.List_Users()
+        return render_template('selecteddislikes.html', dislikes=dislikes, rehypesUser=rehypesUser)
+
+@app.route('/dislike_cancel/<hype_id>/<user_id>')
+def dislike_cancel(hype_id, user_id):
+    app.dislike.delete_dislike(hype_id, user_id)
+    return render_template('dislikes_selected.html' , users_dislike = app.dislike.select_dislikes())
+
+@app.route('/dislike_reason_update', methods=['GET', 'POST'])
+def dislike_reason_update_func():
+    if request.method == 'GET':
+        return render_template('dislikes_selected.html' , users_dislike = app.dislike.select_dislikes())
+    else:
+        hype_id = request.form['hype_id']
+        user_id = request.form['user_id']
+        reason = request.form['reason']
+        app.dislike.update_reason(hype_id, user_id, reason)
+        return render_template('dislikes_selected.html' , users_dislike = app.dislike.select_dislikes())
+
+@app.route('/dislike_add', methods=['GET', 'POST'])
+def dislike_adds():
+    if request.method == 'GET':
+        return render_template('dislikes.html', hypes = app.dislike.List_Hypes(), users = app.dislike.select_users())
+    else:
+        hype_id = request.form['hype_dislike']
+        user_id = request.form['user_ids']
+        reason = request.form['reason']
+        app.dislike.add_dislike(user_id, hype_id, reason)
+        return render_template('dislikes_selected.html',users_dislike = app.dislike.select_dislikes())    
+    
 @app.route('/events')
 def events_page():
     return render_template('events.html')
