@@ -149,11 +149,9 @@ def drop_database():
         app.rehype.drop_Rehype()
         app.trending.drop_Trending()
         app.hype.Drop_Comments()
+        app.hype.Drop_Hypes()
 
         cursor = connection.cursor()
-
-        query = """DROP TABLE IF EXISTS HYPES"""
-        cursor.execute(query)
 
         query = """DROP TABLE IF EXISTS USERS"""
         cursor.execute(query)
