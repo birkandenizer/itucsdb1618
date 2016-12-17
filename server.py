@@ -18,6 +18,7 @@ from block import block
 from role import Role
 from attachment import Attachment
 from user import User
+from hypeline import Hypeline
 
 app = Flask(__name__)
 app.rehype=Rehype(app)
@@ -28,6 +29,7 @@ app.attachment=Attachment(app)
 app.block=block(app)
 app.contacts=Contact(app)
 app.user=User(app)
+app.hypeline=Hypeline(app)
 
 def get_elephantsql_dsn(vcap_services):
     """Returns the data source name for ElephantSQL."""
