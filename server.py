@@ -565,9 +565,8 @@ def dislike_adds():
         return render_template('dislikes.html', hypes = app.dislike.List_Hypes(), users = app.dislike.select_users())
     else:
         hype_id = request.form['hype_dislike']
-        user_id = request.form['user_ids']
         reason = request.form['reason']
-        app.dislike.add_dislike(user_id, hype_id, reason)
+        app.dislike.add_dislike(session['userid'], hype_id, reason)
         return render_template('dislikes_selected.html',users_dislike = app.dislike.select_dislikes())    
     
 @app.route('/events')
