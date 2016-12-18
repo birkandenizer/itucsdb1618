@@ -60,10 +60,10 @@ class Trending:
              query = """ SELECT COUNT(*) FROM TRENDING WHERE HYPE_ID = %s"""
              cursor.execute(query,(hype_id))
              trending_count = cursor.fetchall()
-             query = """ SELECT TEXT FROM HYPES WHERE HYPE_ID = %s"""
+             query = """ SELECT TAGS FROM TAGS WHERE HYPE_ID = %s"""
              cursor.execute(query,(hype_id))
              text = cursor.fetchall()
-             word = text[0][0].split()[0]
+             word = text[0][0]
              if rehype_count[0][0] == 3 :
                  if trending_count[0][0] == 0:
                      element = [hype_id, rehype_count[0][0], word]
