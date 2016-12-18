@@ -1,11 +1,56 @@
 {% extends "layout.html" %}
-{% block title %}Events{% endblock %}
+{% block title %}Events Page{% endblock %}
 {% block content %}
-
-      <h1>Republic Day of Turkey  29 October</h1>
-        <p>The holiday commemorates the events of 29 October 1923, when Mustafa Kemal declared that Turkey was henceforth a republic. Turkey had de facto been a republic since 23 April 1920, the date of the establishment of the Grand National Assembly of Turkey, but the official confirmation of this fact came only three-and-a-half years later. On 29 October 1923, the status of the nation as a republic was declared and its official name was proclaimed to be Türkiye Cumhuriyeti ("the Republic of Turkey"). After that, a vote was held in the Grand National Assembly, and Atatürk was elected as the first President of the Republic of Turkey.</p>
-      <h1>United States presidential election of 2016</h1>
-        <p>Voters will select presidential electors, who in turn will vote for a new president and vice president through the Electoral College. The term limit established in the Twenty-second Amendment to the United States Constitution prevents the incumbent president, Barack Obama of the Democratic Party, from being elected to a third term. The 2016 election will determine the 45th President and 48th Vice President of the United States.</p>
-
-
+<head>
+    <link href="{{url_for('static', filename='hypeline.css')}}" rel="stylesheet" />
+</head>
+    <body>
+    <div class="section">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="col-md-3">
+              <a href="#"><img src="https://raw.githubusercontent.com/itucsdb1618/itucsdb1618/master/static/events.jpg" class="img-responsive avatar"></a>
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+                 <h1>Welcome to Events Page</h1>
+                 <p>Hypes related to events will be shown here if there is any</p>
+              </div>
+            </div>
+            {% for username, text, topic, date in hypes %}
+            <div class="col-sm-offset-3 col-sm-7">
+              <div class="row hype">
+                <div class="col-sm-offset-0 col-sm-2">
+                  <a href="{{ url_for('account_page', username=username)}}" class=""><img src="{{ url }}" class="img-responsive img-rounded hype-avatar"></a>
+                </div>
+                <div class="col-sm-9">
+                  <h2><strong>{{ username }}</strong><small> posted in {{ topic }}, at {{ date }}</small></h2>
+                  <p>{{ text }}</p>
+                </div>
+              </div>
+              <div class="row buttons">
+				<div class="col-sm-offset-2 col-sm-1">
+					<button type="submit" class="btn btn-default">Comment</button>
+                </div>
+                <div class="col-sm-offset-1 col-sm-1">
+					<button type="submit" class="btn btn-default">Rehype</button>
+                </div>
+                <div class="col-sm-offset-1 col-sm-1">
+					<button type="submit" class="btn btn-default">Favorite</button>
+                </div>
+                <div class="col-sm-offset-1 col-sm-1">
+					<button type="submit" class="btn btn-default">Block</button>
+                </div>
+                <div class="col-sm-offset-0 col-sm-4">
+                </div>
+			  </div>
+			  <br><br>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
 {% endblock %}
