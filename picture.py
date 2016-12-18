@@ -46,10 +46,10 @@ class Picture:
                 cursor.execute(query)
                 url = cursor.fetchall()
                 if  url is None:
-                    url = "/static/avatar-1577909_1280.png"
+                    url = "{{url_for('static', filename='avatar-1577909_1280.png')}}"
                     return url
                 else:
-                    url=url[0]
+                    url=url[0][0]
                     return url
             except dbapi2.DatabaseError:
                 connection.rollback()
