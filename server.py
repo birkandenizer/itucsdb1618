@@ -62,6 +62,7 @@ def home_page():
         if session['userid'] == 0:
             return render_template('home.html')
         return redirect(url_for('hypeline_page'))
+    session['userid'] = 0
     return render_template('home.html')
 
 @app.route('/initdb')
