@@ -397,10 +397,9 @@ def sport_page_add_x():
     if request.method == 'GET':
         return render_template('sport.html' , sportpage = app.followers.select_followers() , sportuser = app.followers.select_users())
     else:
-        person_id = request.form['user_ids']
         block_id = request.form['user_blocked']
         reason = request.form['reason']
-        app.block.add_block(person_id, block_id, reason)
+        app.block.add_block(session['userid'], block_id, reason)
         return render_template('show_users_blocked.html' , sportuser2 = app.block.select_users())
 
 @app.route('/sport/unblock/<person_id>/<block_id>')
