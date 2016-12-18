@@ -58,7 +58,7 @@ class dislike:
                 date = datetime.date.today()
                 cursor = connection.cursor()
                 query =  """INSERT INTO DISLIKES(HYPE_ID, USER_ID, DATE, REASON) VALUES (%s, %s, %s, %s)"""
-                cursor.execute(query, (user_id, hype_id, date, reason))
+                cursor.execute(query, (hype_id, user_id, date, reason))
                 connection.commit()
                 cursor.close()
             except dbapi2.DatabaseError:
