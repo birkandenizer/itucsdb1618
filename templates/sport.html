@@ -32,7 +32,7 @@
 				<td> {{ user_id }}</td>
 				<td> {{ text }} </td>
 				<td> {{ date }} </td>
-				<td> <a href="{{ url_for('sport_page_add', follower_id=user_id, followed_id= user_id1  )}} " style="text-decoration:none;" class="btn btn-danger btn-sm" role="button"> <span class="glyphicon glyphicon-wrench"></span> FOLLOW </a>
+				<td> <a href="{{ url_for('sport_page_add', follower_id=user_id  )}} " style="text-decoration:none;" class="btn btn-danger btn-sm" role="button"> <span class="glyphicon glyphicon-wrench"></span> FOLLOW </a>
 					 <a href="{{ url_for('sport_page_delete', follower_id=user_id)}} " style="text-decoration:none;" class="btn btn-danger btn-sm" role="button"> <span class="glyphicon glyphicon-remove"></span> UNFOLLOW </a>
 				</td>
 				</tr>
