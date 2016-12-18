@@ -36,6 +36,7 @@ class Favorite:
 
     def List_Favorites(self, user_ids):
         with dbapi2.connect(self.app.config['dsn']) as connection:
+             user_ids = str(user_ids)
              cursor = connection.cursor()
              query = """ SELECT * FROM FAVORITES WHERE USER_ID = %s ORDER BY DATE ASC"""
              cursor.execute(query,(user_ids))
