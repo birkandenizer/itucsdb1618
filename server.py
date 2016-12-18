@@ -490,7 +490,6 @@ def music_page_delete(hype_id):
 @app.route('/favorites', methods=['GET','POST'])
 def favorites_select():
     if request.method =='GET':
-        if request.method =='GET':
         user_ids = session['userid']
         favorites = app.favorite.List_Favorites(user_ids)
         rehypesUser = app.rehype.List_Users()
