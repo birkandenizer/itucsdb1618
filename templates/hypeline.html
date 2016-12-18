@@ -59,13 +59,13 @@
 					<button type="submit" class="btn btn-default">Comment</button>
                 </div>
                 <div class="col-sm-offset-1 col-sm-1">
-					<button type="submit" class="btn btn-default">Rehype</button>
+					<a href="{{ url_for('hypeline_rehype', username=username, text=text, topic=topic, date=date  )}} " style="text-decoration:none;" class="btn btn-danger btn-sm" role="button"><span class="glyphicon glyphicon-wrench"></span> Rehype</a>
                 </div>
 		<div class="col-sm-offset-1 col-sm-1">
 					<a href="{{ url_for('hypeline_dislike_add', text=text, topic=topic , date=date, username=username )}} " style="text-decoration:none;" class="btn btn-danger btn-sm" role="button"> <span class="glyphicon glyphicon-wrench"></span> Dislike </a>
                 </div>
                 <div class="col-sm-offset-1 col-sm-1">
-					<button type="submit" class="btn btn-default">Favorite</button>
+					<a href="{{ url_for('hypeline_favorite', username=username, text=text, topic=topic, date=date  )}} " style="text-decoration:none;" class="btn btn-danger btn-sm" role="button"><span class="glyphicon glyphicon-wrench"></span> Favorite</a>
                 </div>
                 <div class="col-sm-offset-1 col-sm-1">
 					<a href="{{ url_for('hypeline_block', username=username  )}} " style="text-decoration:none;" class="btn btn-danger btn-sm" role="button"><span class="glyphicon glyphicon-wrench"></span> BLOCK</a>
