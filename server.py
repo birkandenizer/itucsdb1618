@@ -298,6 +298,15 @@ def hypeline_hype():
 
     return redirect(url_for('hypeline_page'))
 
+@app.route('/hypeline/block/<username>')
+def hypeline_block(username):
+    t = datetime.date.today()
+    user_id=app.user.Get_User(username)
+    user_id = user_id[0][0]
+    reason = "General"
+    app.block.add_block(session['userid'], user_id, reason)
+    return redirect(url_for('hypeline_page'))
+
 @app.route('/user/<username>')
 def account_page(username):
     return render_template('account.html', hypes = app.hypeline.List_Hypes_User(username), user = username)
