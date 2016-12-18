@@ -11,6 +11,8 @@ class Login:
                 query = """SELECT PASSWORD FROM USERS WHERE USERNAME = %s """
                 cursor.execute(query, (username,))
                 passw = cursor.fetchone()
+                if passw is None:
+                    return -1
                 if password != passw[0]:
                     return -1
                 query = """SELECT USER_ID FROM USERS WHERE USERNAME = %s """
