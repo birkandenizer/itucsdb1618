@@ -40,6 +40,30 @@ class Rehype:
              cursor.execute(query)
              hypespage = cursor.fetchall()
              return hypespage
+            
+    def List_News_Hypes(self):
+        with dbapi2.connect(self.app.config['dsn']) as connection:
+             cursor = connection.cursor()
+             query = """ SELECT * FROM HYPES WHERE TOPIC = 'News' ORDER BY DATE ASC"""
+             cursor.execute(query)
+             newsHypespage = cursor.fetchall()
+             return newsHypespage
+
+    def List_Tech_Hypes(self):
+        with dbapi2.connect(self.app.config['dsn']) as connection:
+             cursor = connection.cursor()
+             query = """ SELECT * FROM HYPES WHERE TOPIC = 'Technology' ORDER BY DATE ASC"""
+             cursor.execute(query)
+             TechHypespage = cursor.fetchall()
+             return TechHypespage
+
+    def List_Events_Hypes(self):
+        with dbapi2.connect(self.app.config['dsn']) as connection:
+             cursor = connection.cursor()
+             query = """ SELECT * FROM HYPES WHERE TOPIC = 'Events' ORDER BY DATE ASC"""
+             cursor.execute(query)
+             EventsHypespage = cursor.fetchall()
+             return EventsHypespage
 
     def List_Rehypes(self):
         with dbapi2.connect(self.app.config['dsn']) as connection:
