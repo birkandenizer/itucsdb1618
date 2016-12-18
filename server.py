@@ -90,24 +90,6 @@ def initialize_database():
         )"""
         cursor.execute(query)
 
-        query = """ CREATE TABLE IF NOT EXISTS FOLLOWER(
-        PERSON_ID INTEGER NOT NULL REFERENCES USERS (USER_ID) ON DELETE CASCADE,
-        FOLLOWER_ID INTEGER NOT NULL REFERENCES USERS (USER_ID) ON DELETE CASCADE,
-        GROUP_NAME VARCHAR(50),
-        DATE DATE NOT NULL,
-        PRIMARY KEY(PERSON_ID,FOLLOWER_ID)
-        )"""
-        cursor.execute(query)
-
-        query = """ CREATE TABLE IF NOT EXISTS BLOCKED(
-        PERSON_ID INTEGER NOT NULL REFERENCES USERS (USER_ID) ON DELETE CASCADE,
-        BLOCK_ID INTEGER NOT NULL REFERENCES USERS (USER_ID) ON DELETE CASCADE,
-        REASON VARCHAR(50),
-        DATE DATE NOT NULL,
-        PRIMARY KEY(PERSON_ID,BLOCK_ID)
-        )"""
-        cursor.execute(query)
-        
         connection.commit()
         
         app.hype.Initialize_Hypes()
@@ -120,6 +102,9 @@ def initialize_database():
         app.trending.initialize_Trending()
         app.hype.Initialize_Comments()
         app.hype.Initialize_Tags()
+        app.followers.initialize_table()
+        app.block.initialize_table()
+        app.dislike.initialize_table()
 
     return redirect(url_for('home_page'))
 
@@ -138,6 +123,9 @@ def drop_database():
         cursor.execute(query)
 
         query = """DROP TABLE IF EXISTS BLOCKED"""
+        cursor.execute(query)
+        
+        query = """DROP TABLE IF EXISTS DISLIKES"""
         cursor.execute(query)
 
         connection.commit()
