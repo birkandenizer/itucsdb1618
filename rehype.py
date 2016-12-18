@@ -48,6 +48,15 @@ class Rehype:
              cursor.execute(query)
              rehypespage = cursor.fetchall()
              return rehypespage
+            
+    def List_RehypesUser(self, user_ids):
+        with dbapi2.connect(self.app.config['dsn']) as connection:
+             user_ids = str(user_ids)
+             cursor = connection.cursor()
+             query = """ SELECT * FROM REHYPES WHERE USER_ID = %s ORDER BY DATE ASC"""
+             cursor.execute(query,(user_ids))
+             rehypespage = cursor.fetchall()
+             return rehypespage
 
     def Add_Rehype(self, user_id, hype_id):
         with dbapi2.connect(self.app.config['dsn']) as connection:
@@ -78,10 +87,10 @@ class Rehype:
                 cursor.close()
             except dbapi2.DatabaseError:
                 connection.rollback()
-                return hype_id[0][0]
+                return hype_ids
             finally:
                connection.commit()
-               return hype_id[0][0]
+               return hype_ids
 
     def Update_Rehype(self, old_user_id, hype_id, comment, user_ids):
         with dbapi2.connect(self.app.config['dsn']) as connection:
