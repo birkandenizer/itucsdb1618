@@ -367,7 +367,7 @@ def account_follow(username):
 
 @app.route('/news')
 def news_page():
-    return render_template('news.html')
+    return render_template('news.html', hypes=app.rehype.List_News_Hypes())
 
 @app.route('/sport', methods=['GET', 'POST'])
 def sport_page():
@@ -422,7 +422,7 @@ def sport_page_delete(follower_id):
 
 @app.route('/technology')
 def technology_page():
-    return render_template('technology.html')
+    return render_template('technology.html',hypes=app.rehype.List_Tech_Hypes())
 
 @app.route('/music')
 def music_page():
@@ -571,7 +571,7 @@ def dislike_adds():
     
 @app.route('/events')
 def events_page():
-    return render_template('events.html')
+    return render_template('events.html', hypes=app.rehype.List_Events_Hypes())
 @app.route('/login')
 def login_page():
     return render_template('login.html')
