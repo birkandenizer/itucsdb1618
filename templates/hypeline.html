@@ -14,24 +14,32 @@
             </div>
             <div class="row">
               <div class="col-sm-6">
-                <form class="form-horizontal" role="form">
-                  <div class="form-group textarea">
-                    <div class="col-sm-offset-0 col-sm-12">
-                      <textarea rows="5" maxlength="149" type="text" class="form-control textarea" id="hype" placeholder="What's Hype?"></textarea>
+                <form class="form-signup" action="/hypeline/hype" id="hypeline_hype" method=post>
+                    <div class="form-group textarea">
+                      <div class="col-sm-offset-0 col-sm-12">
+                        <textarea rows="5" maxlength="149" type="text" class="form-control textarea" name="hype_text" id="hype_text" placeholder="What's Hype?"></textarea>
+                        <textarea rows="1" maxlength="149" type="text" class="form-control textarea" name="hype_tag" id="hype_tag" placeholder="#Tag ME"></textarea>
+                        <label for="topic" class="sr-only">Topic</label>
+                        <select name = "topic" id="topic" class="form-control">
+                            <option value="Music">Music</option>
+                            <option value="News">News</option>
+                            <option value="Technology">Technology</option>
+                            <option value="Sport">Sport</option>
+			</select>
+                      </div>
                     </div>
-                  </div>
-                  <div class="form-group">
-                    <div class="col-sm-offset-0 col-sm-2">
-                      <button type="submit" class="btn btn-default">Photo</button>
+                  </form>
+                    <div class="form-group">
+                      <div class="col-sm-offset-0 col-sm-2">
+                        <button type="button" class="btn btn-default">Photo</button>
+                      </div>
+                      <div class="col-sm-offset-0 col-sm-2">
+                        <button type="button" class="btn btn-default">File</button>
+                      </div>
+                      <div class="col-sm-offset-6 col-sm-2">
+                        <button type="submit" form="hypeline_hype" class="btn btn-default">Hype!!</button>
+                      </div>
                     </div>
-                    <div class="col-sm-offset-0 col-sm-2">
-                      <button type="submit" class="btn btn-default">File</button>
-                    </div>
-                    <div class="col-sm-offset-6 col-sm-2">
-                      <button type="submit" class="btn btn-default">Hype!!</button>
-                    </div>
-                  </div>
-                </form>
               </div>
             </div>
             {% for username, text, topic, date in hypes %}
