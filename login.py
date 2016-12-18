@@ -16,7 +16,7 @@ class Login:
                 query = """SELECT USER_ID FROM USERS WHERE USERNAME = %s """
                 cursor.execute(query, (username,))
                 userid = cursor.fetchone()
-                return userid
+                return userid[0]
             except dbapi2.DatabaseError:
                 connection.rollback()
             finally:
