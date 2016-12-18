@@ -314,6 +314,15 @@ def hypeline_follow(username):
     app.followers.add_follow(session['userid'], user_id)
     return redirect(url_for('hypeline_page'))
 
+@app.route('/hypeline/dislike/<text>/<topic>/<date>/<username>')
+def hypeline_dislike_add(text,topic,date,username):
+    user_id=app.user.Get_User(username)
+    user_id = user_id[0][0]
+    reason = "General"
+    hype_id=app.hype.Get_Hype_ID(user_id, date, text, topic)
+    app.dislike.add_dislike(session['userid'], hype_id, reason)
+    return redirect(url_for('hypeline_page'))
+
 @app.route('/user/<username>')
 def account_page(username):
     return render_template('account.html', hypes = app.hypeline.List_Hypes_User(username), user = username)
