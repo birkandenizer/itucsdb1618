@@ -285,6 +285,19 @@ def delete_hypeblock():
 def hypeline_page():
     return render_template('hypeline.html', hypes = app.hypeline.List_Hypes())
 
+@app.route('/hypeline/hype', methods=['POST'])
+def hypeline_hype():
+    t = datetime.date.today()
+    text = request.form['hype_text']
+    topic = request.form['topic']
+    tags = request.form['hype_tag']
+
+    app.hype.Add_Hype(session['userid'], t, text, topic)
+    hype_id=app.hype.Get_Hype_ID(session['userid'], t, text, topic)
+    app.hype.Add_Tags(hype_id, t, tags)
+
+    return redirect(url_for('hypeline_page'))
+
 @app.route('/user/<username>')
 def account_page(username):
     return render_template('account.html', hypes = app.hypeline.List_Hypes_User(username), user = username)
