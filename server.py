@@ -148,8 +148,8 @@ def drop_database():
         app.rehype.drop_Rehype()
         app.trending.drop_Trending()
         app.hype.Drop_Comments()
-        app.hype.Drop_Hypes()
         app.hype.Drop_Tags()
+        app.hype.Drop_Hypes()
 
         cursor = connection.cursor()
 
@@ -322,6 +322,20 @@ def hypeline_block(username):
     app.block.add_block(session['userid'], user_id, reason)
     return redirect(url_for('hypeline_page'))
 
+@app.route('/hypeline/rehype/<username>/<text>/<topic>/<date>')
+def hypeline_rehype(username,text,topic,date):
+    user_id=app.user.Get_User(username)
+    hype_id=app.hype.Get_Hype_ID(user_id[0][0], date, text, topic)
+    app.rehype.Add_Rehype(session['userid'], hype_id)
+    return render_template('rehypes.html', rehypespage = app.rehype.List_Rehypes())
+
+@app.route('/hypeline/favorite/<username>/<text>/<topic>/<date>')
+def hypeline_favorite(username,text,topic,date):
+    user_id=app.user.Get_User(username)
+    hype_id=app.hype.Get_Hype_ID(user_id[0][0], date, text, topic)
+    app.favorite.Add_Favorite(session['userid'], hype_id)
+    return redirect(url_for('hypeline_page'))
+
 @app.route('/hypeline/follow/<username>')
 def hypeline_follow(username):
     user_id=app.user.Get_User(username)
@@ -427,7 +441,8 @@ def music_page_trending(hype_id):
 
 @app.route('/reypeslist')
 def rehypes_list():
-    rehypespage = app.rehype.List_Rehypes()
+    user_ids = session['userid']
+    rehypespage = app.rehype.List_RehypesUser(user_ids)
     rehypesUser = app.rehype.List_Users()
     return render_template('rehypes_list.html', rehypespage = rehypespage, rehypesUser = rehypesUser)
 
@@ -440,7 +455,7 @@ def rehypes_page():
         comment = request.form['comment']
         old_user_id = request.form['old_user_id']
         hype_id = request.form['hype_id']
-        user_ids = request.form['user_ids']
+        user_ids = session['userid']
         app.rehype.Update_Rehype(old_user_id, hype_id, comment, user_ids)
         element = app.trending.Decision_Add(hype_id)
         if element != 0:
@@ -450,17 +465,16 @@ def rehypes_page():
         if element == True:
             app.trending.Update_Trending(hype_id, 1)
         rehypesUser = app.rehype.List_Users()
-        return render_template('rehypes_list.html', rehypespage = app.rehype.List_Rehypes(), rehypesUser = rehypesUser)
+        return render_template('rehypes_list.html', rehypespage = app.rehype.List_RehypesUser(session['userid']), rehypesUser = rehypesUser)
 
-@app.route('/music/add/<user_id>/<hype_id>')
-def music_page_add(user_id, hype_id):
-    app.rehype.Add_Rehype(user_id, hype_id)
-    rehypesUser = app.rehype.List_Users()
-    return render_template('rehypes.html', rehypespage = app.rehype.List_Rehypes(), rehypesUser = rehypesUser)
+@app.route('/music/add/<hype_id>')
+def music_page_add(hype_id):
+    app.rehype.Add_Rehype(session['userid'], hype_id)
+    return render_template('rehypes.html', rehypespage = app.rehype.List_RehypesUser(session['userid']))
 
-@app.route('/music/delete/<user_id>/<hype_id>')
-def music_page_delete(user_id, hype_id):
-    hype_ids = app.rehype.Delete_Rehype(user_id, hype_id)
+@app.route('/music/delete/<hype_id>')
+def music_page_delete(hype_id):
+    hype_ids = app.rehype.Delete_Rehype(session['userid'], hype_id)
     element = False
     element = app.trending.Decision_Delete(hype_ids)
     if element == True:
@@ -470,16 +484,19 @@ def music_page_delete(user_id, hype_id):
     if element == True:
         app.trending.Update_Trending(hype_ids, 2)
     rehypesUser = app.rehype.List_Users()
-    return render_template('rehypes_list.html', rehypespage = app.rehype.List_Rehypes(), rehypesUser = rehypesUser)
+    return render_template('rehypes_list.html', rehypespage = app.rehype.List_RehypesUser(session['userid']), rehypesUser = rehypesUser)
 
 
 @app.route('/favorites', methods=['GET','POST'])
 def favorites_select():
     if request.method =='GET':
-        hypespageUsername = app.rehype.List_Users()
-        return render_template('favorites.html', hypespageUsername=hypespageUsername)
+        if request.method =='GET':
+        user_ids = session['userid']
+        favorites = app.favorite.List_Favorites(user_ids)
+        rehypesUser = app.rehype.List_Users()
+        return render_template('selectedfavorites.html', favorites=favorites, rehypesUser=rehypesUser)
     else:
-        user_ids = request.form['user_ids']
+        user_ids = session['userid']
         favorites = app.favorite.List_Favorites(user_ids)
         rehypesUser = app.rehype.List_Users()
         return render_template('selectedfavorites.html', favorites=favorites, rehypesUser=rehypesUser)
@@ -487,8 +504,10 @@ def favorites_select():
 @app.route('/favorite/del/<favorite_id>')
 def favorite_delete(favorite_id):
     app.favorite.Delete_Favorite(favorite_id)
-    hypespageUsername = app.rehype.List_Users()
-    return render_template('favorites.html', hypespageUsername=hypespageUsername)
+    user_ids = session['userid']
+    favorites = app.favorite.List_Favorites(user_ids)
+    rehypesUser = app.rehype.List_Users()
+    return render_template('selectedfavorites.html', favorites=favorites, rehypesUser=rehypesUser)
 
 @app.route('/favorite/update/<favorite_id>', methods=['GET','POST'])
 def favorite_update(favorite_id):
@@ -499,8 +518,10 @@ def favorite_update(favorite_id):
         favorite_id = request.form['favorite_id']
         rate = request.form['rate']
         app.favorite.Update_Favorite(favorite_id, rate)
-        hypespageUsername = app.rehype.List_Users()
-        return render_template('favorites.html', hypespageUsername=hypespageUsername)
+        user_ids = session['userid']
+        favorites = app.favorite.List_Favorites(user_ids)
+        rehypesUser = app.rehype.List_Users()
+        return render_template('selectedfavorites.html', favorites=favorites, rehypesUser=rehypesUser)
 
 @app.route('/favoriteadd', methods=['GET','POST'])
 def favorite_add():
@@ -509,7 +530,7 @@ def favorite_add():
         return render_template('music.html', hypespage = app.rehype.List_Hypes(), hypespageUsername = hypespageUsername)
     else:
         hype_id = request.form['hype_id']
-        user_ids = request.form['user3_ids']
+        user_ids = session['userid']
         app.favorite.Add_Favorite(user_ids, hype_id)
         hypespageUsername = app.rehype.List_Users()
         return render_template('music.html', hypespage = app.rehype.List_Hypes(), hypespageUsername = hypespageUsername)
