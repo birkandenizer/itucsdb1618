@@ -37,6 +37,21 @@ class Picture:
              cursor.execute(query)
              picturesspage = cursor.fetchall()
              return picturesspage
+            
+    def get_url(self, user_id):
+        with dbapi2.connect(self.app.config['dsn']) as connection:
+            try:
+                cursor = connection.cursor()
+                #query = """ SELECT URL FROM PICTURE WHERE USER_ID = %s """
+                query = "SELECT URL FROM PICTURE WHERE USER_ID = '" + str(user_id) + "'"
+                cursor.execute(query)
+                url = cursor.fetchall()
+                url=url[0][0]
+                return url
+            except dbapi2.DatabaseError:
+                connection.rollback()
+            finally:
+               connection.commit()
 
     def add_picture(self, picture_id, user_id, url):
         with dbapi2.connect(self.app.config['dsn']) as connection:
