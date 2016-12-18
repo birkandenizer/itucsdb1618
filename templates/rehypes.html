@@ -33,19 +33,12 @@
 							<div class="col-sm-10">
 								<input type="hidden" name="hype_id" required autofocus value="{{hype_id}}"/>
 							</div>
-							<div class="col-sm-10">
-								<p>Who are you?</p>
-								{% for user3_id, username, name, surname, email, password, count in rehypesUser %}
-									<input type="radio" name="user_ids" value="{{user3_id}}"> {{username}}<br>
-								{% endfor %}
-
-							</div>
 							<div class="col-sm-offset-2 col-sm-10">
 								<button type="submit" name="save" class="btn btn-primary">Add Comment</button>
 							</div>
 						</div>
 					  </form>
-		              <a href="{{ url_for('music_page_delete', user_id=user_id, hype_id=hype_id) }}">Unrehype</a>
+		              <a href="{{ url_for('music_page_delete', hype_id=hype_id) }}">Unrehype</a>
 		            </div>
 		          </div>
 		        </div>
