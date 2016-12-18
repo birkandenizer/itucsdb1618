@@ -64,7 +64,7 @@
 					<button type="submit" class="btn btn-default">Favorite</button>
                 </div>
                 <div class="col-sm-offset-1 col-sm-1">
-					<button type="submit" class="btn btn-default">Block</button>
+					<a href="{{ url_for('hypeline_block', username=username  )}} " style="text-decoration:none;" class="btn btn-danger btn-sm" role="button"><span class="glyphicon glyphicon-wrench"></span> BLOCK</a>
                 </div>
                 <div class="col-sm-offset-0 col-sm-4">
                 </div>
