@@ -1,19 +1,56 @@
 {% extends "layout.html" %}
-{% block title %}Home{% endblock %}
+{% block title %}News Page{% endblock %}
 {% block content %}
-NEWS
-This page will contain news related hypes.
-
-Example:
-<div class="container">
-  <div class="jumbotron">
-    <h2>Climate change could drive 122m more people into extreme poverty by 2030</h2>
-    <h3>Authored by: Claire Provost</h3>
-    <p>
-    Up to 122 million more people worldwide could be living in extreme poverty by 2030 as a result of climate change and its impacts on small-scale farmers’ incomes, a major UN report warned on Monday.
-    Climate change is “a major and growing threat to global food security”, said the report, warning that it could increase the global population living in extreme poverty by between 35 and 122 million by 2030, with farming communities in sub-Saharan Africa among the hardest hit.</p><p>
-    Taken from: https://www.theguardian.com/global-development/2016/oct/17/climate-change-could-drive-122m-more-people-into-extreme-poverty-by-2030-un-united-nations-report 
-    </p>
-  </div>
-</div>
+<head>
+    <link href="{{url_for('static', filename='hypeline.css')}}" rel="stylesheet" />
+</head>
+    <body>
+    <div class="section">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="col-md-3">
+              <a href="#"><img src="https://raw.githubusercontent.com/itucsdb1618/itucsdb1618/master/static/news.jpg" class="img-responsive avatar"></a>
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+                 <h1>Welcome to News Page</h1>
+                 <p>Hypes related to news will be shown here if there is any</p>
+              </div>
+            </div>
+            {% for username, text, topic, date in hypes %}
+            <div class="col-sm-offset-3 col-sm-7">
+              <div class="row hype">
+                <div class="col-sm-offset-0 col-sm-2">
+                  <a href="{{ url_for('account_page', username=username)}}" class=""><img src="{{ url }}" class="img-responsive img-rounded hype-avatar"></a>
+                </div>
+                <div class="col-sm-9">
+                  <h2><strong>{{ username }}</strong><small> posted in {{ topic }}, at {{ date }}</small></h2>
+                  <p>{{ text }}</p>
+                </div>
+              </div>
+              <div class="row buttons">
+				<div class="col-sm-offset-2 col-sm-1">
+					<button type="submit" class="btn btn-default">Comment</button>
+                </div>
+                <div class="col-sm-offset-1 col-sm-1">
+					<button type="submit" class="btn btn-default">Rehype</button>
+                </div>
+                <div class="col-sm-offset-1 col-sm-1">
+					<button type="submit" class="btn btn-default">Favorite</button>
+                </div>
+                <div class="col-sm-offset-1 col-sm-1">
+					<button type="submit" class="btn btn-default">Block</button>
+                </div>
+                <div class="col-sm-offset-0 col-sm-4">
+                </div>
+			  </div>
+			  <br><br>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
 {% endblock %}
