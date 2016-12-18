@@ -20,6 +20,8 @@ class Role:
              query = """ SELECT TYPE FROM ROLES WHERE USER_ID = %s AND TAG = %s"""
              cursor.execute(query, (userid, tag,))
              roles = cursor.fetchall()
+             if roles==[]:
+                return " "
              return roles[0][0]
 
     def Add_Roles(self, user_id, tag, type):
