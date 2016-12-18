@@ -59,7 +59,12 @@ def get_elephantsql_dsn(vcap_services):
 
 @app.route('/')
 def home_page():
-    return render_template('home.html')
+    if session['userid'] is None:
+        session['userid'] = 0
+        return render_template('home.html')
+    if session['userid'] == 0:
+        return render_template('home.html')
+    return redirect(url_for('hypeline_page'))
 
 @app.route('/initdb')
 def initialize_database():
@@ -109,7 +114,9 @@ def initialize_database():
         app.followers.initialize_table()
         app.block.initialize_table()
         app.dislike.initialize_table()
-
+        
+        app.user.Add_Users("admin", "admin", "admin", "admin@hyper.com", "admin")
+        app.role.Add_Roles(1, "Generic", "Admin")
     return redirect(url_for('home_page'))
 
 @app.route('/dropitucsdb1618')
@@ -175,11 +182,14 @@ def login():
     username = request.form['username']
     password = request.form['password']
     session['userid'] = app.login.Get_UserID(username, password)
+    if session['userid'] == -1:
+            session['userid'] = 0
+            return render_template("failed_login.html")
     return redirect(url_for('home_page'))
 
 @app.route('/logout')
 def logout():
-    session.pop('userid', None)
+    session['userid'] = 0
     return redirect(url_for('home_page'))
 
 @app.route('/addUser', methods=['POST'])
@@ -215,11 +225,15 @@ def delete_user():
 
 @app.route('/userManagement')
 def user_management_page():
-    return render_template('users.html', users = app.user.List_Users())
+    if app.role.Check_Role(session['userid'], 'Generic') == "Admin":
+        return render_template('users.html', users = app.user.List_Users())
+    return render_template('permission.html')
 
 @app.route('/roleManagement')
 def roles_page():
-    return render_template('roles.html', roles = app.role.List_Roles(), users = app.user.List_Users())
+    if app.role.Check_Role(session['userid'], 'Generic') == "Admin":
+        return render_template('roles.html', roles = app.role.List_Roles(), users = app.user.List_Users())
+    return render_template('permission.html')
 
 @app.route('/addRole', methods=['POST'])
 def add_role():
@@ -245,17 +259,19 @@ def delete_role():
 
 @app.route('/hypeblockManagement')
 def hypeblock_page():
-    with dbapi2.connect(app.config['dsn']) as connection:
-        try:
-            cursor = connection.cursor()
-            query = """ SELECT * FROM HYPES ORDER BY HYPE_ID"""
-            cursor.execute(query)
-            hypes = cursor.fetchall()
-        except dbapi2.DatabaseError:
-            connection.rollback()
-        finally:
-            connection.commit()
-    return render_template('hypeblock.html', hypeblocks = app.hypeblock.List_BlockedHypes(), users = app.user.List_Users(), hypes = hypes)
+    if app.role.Check_Role(session['userid'], 'Generic') == "Admin":
+        with dbapi2.connect(app.config['dsn']) as connection:
+            try:
+                cursor = connection.cursor()
+                query = """ SELECT * FROM HYPES ORDER BY HYPE_ID"""
+                cursor.execute(query)
+                hypes = cursor.fetchall()
+            except dbapi2.DatabaseError:
+                connection.rollback()
+            finally:
+                connection.commit()
+        return render_template('hypeblock.html', hypeblocks = app.hypeblock.List_BlockedHypes(), users = app.user.List_Users(), hypes = hypes)
+    return render_template('permission.html')
 
 @app.route('/addhypeblock', methods=['POST'])
 def add_hypeblock():
