@@ -7,6 +7,7 @@ import re
 from flask import Flask
 from flask import request
 from flask import redirect
+from flask import session
 from flask import render_template
 from flask.helpers import url_for
 
@@ -24,8 +25,10 @@ from user import User
 from hypeblock import Hypeblock
 from dislike import dislike
 from hypes import Hype
+from login import Login
 
 app = Flask(__name__)
+app.secret_key = 'A0Z//hdfg^+%j/3yX R~XHHsadfaf]LWX/,?RT'
 app.attachment=Attachment(app)
 app.block=block(app)
 app.contacts=Contact(app)
@@ -40,6 +43,7 @@ app.user=User(app)
 app.hypeblock=Hypeblock(app)
 app.dislike=dislike(app)
 app.hype=Hype(app)
+app.login=Login(app)
 
 
 def get_elephantsql_dsn(vcap_services):
@@ -166,6 +170,18 @@ def counter_page():
         count = cursor.fetchone()[0]
     return "This page was accessed %d times." % count
 
+@app.route('/login', methods=['POST'])
+def login():
+    username = request.form['username']
+    password = request.form['password']
+    session['userid'] = app.login.Get_UserID(username, password)
+    return redirect(url_for('home_page'))
+
+@app.route('/logout')
+def logout():
+    session.pop('userid', None)
+    return redirect(url_for('home_page'))
+
 @app.route('/addUser', methods=['POST'])
 def add_user():
     username = request.form['username']
@@ -269,10 +285,17 @@ def delete_hypeblock():
 def hypeline_page():
     return render_template('hypeline.html', hypes = app.hypeline.List_Hypes())
 
+@app.route('/user/<username>')
+def account_page(username):
+    return render_template('account.html', hypes = app.hypeline.List_Hypes_User(username), user = username)
+
+@app.route('/user/<username>/follow')
+def account_follow(username):
+    return redirect(url_for('account_page' , username = username))
+
 @app.route('/news')
 def news_page():
     return render_template('news.html')
-
 
 @app.route('/sport', methods=['GET', 'POST'])
 def sport_page():
