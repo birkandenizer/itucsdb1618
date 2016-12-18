@@ -9,14 +9,7 @@
 
 	<form role="form" action="/sport_block" method="post" name="sport_block" class="form-horizontal">
 		<div class="form-group">
-			<div class="col-sm-10">
-				<p>Please select your ID?</p>
-				{% for user_id1, username, name, surname, email, password, followercount in sportuser %}
-					<input type="radio" name="user_ids" value="{{user_id1}}"> {{username}}<br>
-				{% endfor %}
-
-			</div>
-
+			
 			<table class="table table-bordered table-striped">
 				<tr>
 				<th class="col-sm-1"> SELECT </th>
