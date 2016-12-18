@@ -4,6 +4,23 @@ import datetime
 class block:
     def __init__(self, app):
         self.app = app
+        
+    def initialize_table(self):
+        with dbapi2.connect(self.app.config['dsn']) as connection:
+            try:
+                cursor = connection.cursor()
+                cursor.execute(""" CREATE TABLE IF NOT EXISTS BLOCKED(
+                PERSON_ID INTEGER NOT NULL REFERENCES USERS (USER_ID) ON DELETE CASCADE,
+                BLOCK_ID INTEGER NOT NULL REFERENCES USERS (USER_ID) ON DELETE CASCADE,
+                REASON VARCHAR(50),
+                DATE DATE NOT NULL,
+                PRIMARY KEY(PERSON_ID,BLOCK_ID)
+                )""")
+                connection.commit()
+            except dbapi2.DatabaseError:
+                connection.rollback()
+            finally:
+               connection.commit()
 
     def show_blocked(self):
         with dbapi2.connect(self.app.config['dsn']) as connection:
