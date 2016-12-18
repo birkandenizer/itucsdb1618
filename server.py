@@ -327,7 +327,7 @@ def hypeline_dislike_add(text,topic,date,username):
 def account_page(username):
     user_id=app.user.Get_User(username)
     user_id = user_id[0][0]
-    return render_template('account.html', hypes = app.hypeline.List_Hypes_User(username), url = app.picture.get_url(user_id),, user = username)
+    return render_template('account.html', hypes = app.hypeline.List_Hypes_User(username), url = app.picture.get_url(user_id), user = username)
 
 @app.route('/user/<username>/follow')
 def account_follow(username):
