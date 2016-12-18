@@ -329,9 +329,12 @@ def account_page(username):
     user_id = user_id[0][0]
     return render_template('account.html', hypes = app.hypeline.List_Hypes_User(username), url = app.picture.get_url(user_id), user = username)
 
-@app.route('/user/<username>/follow')
+@app.route('/user/follow/<username>')
 def account_follow(username):
-    return redirect(url_for('account_page' , username = username))
+    user_id=app.user.Get_User(username)
+    user_id = user_id[0][0]
+    app.followers.add_follow(session['userid'], user_id)
+    return render_template('account.html', hypes = app.hypeline.List_Hypes_User(username), user = username)
 
 @app.route('/news')
 def news_page():
