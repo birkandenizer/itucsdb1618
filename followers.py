@@ -75,14 +75,13 @@ class followers:
                 connection.rollback()
             finally:
                connection.commit()
-
-
-    def delete_follow(self, follower_id):
+            
+    def delete_follow(self, person_id, follower_id):
         with dbapi2.connect(self.app.config['dsn']) as connection:
             try:
                 cursor = connection.cursor()
-                query =  """DELETE FROM FOLLOWER WHERE (FOLLOWER_ID = %s)"""
-                cursor.execute(query, (follower_id,))
+                query =  """DELETE FROM FOLLOWER WHERE PERSON_ID = %s AND FOLLOWER_ID = %s"""
+                cursor.execute(query, (person_id, follower_id,))
                 connection.commit()
                 cursor.close()
             except dbapi2.DatabaseError:
