@@ -56,15 +56,13 @@ def get_elephantsql_dsn(vcap_services):
              dbname='{}'""".format(user, password, host, port, dbname)
     return dsn
 
-
 @app.route('/')
 def home_page():
-    if session['userid'] is None:
-        session['userid'] = 0
-        return render_template('home.html')
-    if session['userid'] == 0:
-        return render_template('home.html')
-    return redirect(url_for('hypeline_page'))
+    if 'userid' in session:
+        if session['userid'] == 0:
+            return render_template('home.html')
+        return redirect(url_for('hypeline_page'))
+    return render_template('home.html')
 
 @app.route('/initdb')
 def initialize_database():
