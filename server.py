@@ -382,8 +382,7 @@ def sport_page_unblock(person_id, block_id):
 
 @app.route('/sport/add/<follower_id>')
 def sport_page_add(follower_id):
-    sayi=2
-    app.followers.add_follow(sayi, follower_id)
+    app.followers.add_follow(session['userid'], follower_id)
     return render_template('show_users_following.html' , sportpage2 = app.followers.show_followers())
 
 
