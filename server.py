@@ -417,7 +417,7 @@ def sport_page_add(follower_id):
 
 @app.route('/sport/delete/<follower_id>')
 def sport_page_delete(follower_id):
-    app.followers.delete_follow(follower_id)
+    app.followers.delete_follow(session['userid'], follower_id)
     return render_template('show_users_following.html' , sportpage2 = app.followers.show_followers())
 
 
