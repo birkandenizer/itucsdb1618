@@ -11,6 +11,16 @@ class Role:
              cursor.execute(query)
              roles = cursor.fetchall()
              return roles
+            
+    def Check_Role(self, userid, tag):
+        if userid == 0:
+            return " "
+        with dbapi2.connect(self.app.config['dsn']) as connection:
+             cursor = connection.cursor()
+             query = """ SELECT TYPE FROM ROLES WHERE USER_ID = %s AND TAG = %s"""
+             cursor.execute(query, (userid, tag,))
+             roles = cursor.fetchall()
+             return roles[0][0]
 
     def Add_Roles(self, user_id, tag, type):
         with dbapi2.connect(self.app.config['dsn']) as connection:
