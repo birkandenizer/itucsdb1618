@@ -42,12 +42,15 @@ class Picture:
         with dbapi2.connect(self.app.config['dsn']) as connection:
             try:
                 cursor = connection.cursor()
-                #query = """ SELECT URL FROM PICTURE WHERE USER_ID = %s """
                 query = "SELECT URL FROM PICTURE WHERE USER_ID = '" + str(user_id) + "'"
                 cursor.execute(query)
                 url = cursor.fetchall()
-                url=url[0][0]
-                return url
+                if  url is None:
+                    url = "{{url_for('static', filename='avatar-1577909_1280.png')}}"
+                    return url
+                else:
+                    url=url[0][0]
+                    return url
             except dbapi2.DatabaseError:
                 connection.rollback()
             finally:
