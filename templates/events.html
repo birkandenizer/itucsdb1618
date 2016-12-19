@@ -18,11 +18,12 @@
                  <p>Hypes related to events will be shown here if there is any</p>
               </div>
             </div>
-            {% for id, username, text, topic, date in hypes %}
+            {% for username, text, topic, date in hypes %}
             <div class="col-sm-offset-3 col-sm-7">
               <div class="row hype">
                 <div class="col-sm-offset-0 col-sm-2">
-                  <a href="{{ url_for('account_page', username=username)}}" class=""><img src="{{ url }}" class="img-responsive img-rounded hype-avatar"></a>
+                  <a href="{{ url_for('account_page', username=username)}}" class=""><img src="{{url_for('static', filename='avatar-1577909_1280.png')}}" class="img-responsive img-rounded hype-avatar"></a>
+		  <a href="{{ url_for('hypeline_follow', username=username  )}} " style="text-decoration:none;" class="btn btn-danger btn-sm" role="button"> <span class="glyphicon glyphicon-wrench"></span> FOLLOW </a>
                 </div>
                 <div class="col-sm-9">
                   <h2><strong>{{ username }}</strong><small> posted in {{ topic }}, at {{ date }}</small></h2>
@@ -34,13 +35,16 @@
 					<button type="submit" class="btn btn-default">Comment</button>
                 </div>
                 <div class="col-sm-offset-1 col-sm-1">
-					<button type="submit" class="btn btn-default">Rehype</button>
+					<a href="{{ url_for('hypeline_rehype', username=username, text=text, topic=topic, date=date  )}} " style="text-decoration:none;" class="btn btn-danger btn-sm" role="button"><span class="glyphicon glyphicon-wrench"></span> Rehype</a>
+                </div>
+		<div class="col-sm-offset-1 col-sm-1">
+					<a href="{{ url_for('hypeline_dislike_add', text=text, topic=topic , date=date, username=username )}} " style="text-decoration:none;" class="btn btn-danger btn-sm" role="button"> <span class="glyphicon glyphicon-wrench"></span> Dislike </a>
                 </div>
                 <div class="col-sm-offset-1 col-sm-1">
-					<button type="submit" class="btn btn-default">Favorite</button>
+					<a href="{{ url_for('hypeline_favorite', username=username, text=text, topic=topic, date=date  )}} " style="text-decoration:none;" class="btn btn-danger btn-sm" role="button"><span class="glyphicon glyphicon-wrench"></span> Favorite</a>
                 </div>
                 <div class="col-sm-offset-1 col-sm-1">
-					<button type="submit" class="btn btn-default">Block</button>
+					<a href="{{ url_for('hypeline_block', username=username  )}} " style="text-decoration:none;" class="btn btn-danger btn-sm" role="button"><span class="glyphicon glyphicon-wrench"></span> BLOCK</a>
                 </div>
                 <div class="col-sm-offset-0 col-sm-4">
                 </div>
