@@ -13,16 +13,20 @@
 			<table class="table table-bordered table-striped">
 				<tr>
 				<th class="col-sm-1"> SELECT </th>
-				<th class="col-sm-1"> USER_ID </th>
-				<th class="col-sm-6"> HYPE </th>
-				<th class="col-sm-2.5"> DATE </th>
-				<th class="col-sm-2.5">FOLLOW/UNFOLLOW</th>
+				<th class="col-sm-2"> USER NAME </th>
+				<th class="col-sm-4"> HYPE </th>
+				<th class="col-sm-2"> DATE </th>
+				<th class="col-sm-3">FOLLOW/UNFOLLOW</th>
 				</tr>
 
 				{% for hype_id, user_id, date, text, topic in sportpage %}
 				<tr>
 				<td> <input type="checkbox" name="user_blocked" value="{{user_id}}"> </td>
-				<td> {{ user_id }}</td>
+				{% for user2_id, username, name, surname, email, password, count in sportuser %}
+	            			{% if user_id == user2_id %}
+	              				<td> {{ username }}</td>
+	              			{% endif %}
+	            		{% endfor %}
 				<td> {{ text }} </td>
 				<td> {{ date }} </td>
 				<td> <a href="{{ url_for('sport_page_add', follower_id=user_id  )}} " style="text-decoration:none;" class="btn btn-danger btn-sm" role="button"> <span class="glyphicon glyphicon-wrench"></span> FOLLOW </a>
