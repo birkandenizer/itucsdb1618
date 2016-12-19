@@ -298,7 +298,7 @@ def delete_hypeblock():
 
 @app.route('/hypeline')
 def hypeline_page():
-    return render_template('hypeline.html', hypes = app.hypeline.List_Hypes())
+    return render_template('hypeline.html', hypes = app.hypeline.List_Hypes(), url = app.picture.get_url(session['userid']))
 
 @app.route('/hypeline/hype', methods=['POST'])
 def hypeline_hype():
