@@ -32,12 +32,16 @@
 	            {% for user2_id, username, name, surname, email, password, count in hypespageUsername %}
 	            	{% if user_id == user2_id %}
 	              		<h3 class="panel-title"> Username : {{ username }}</h3>
+			        <a href="{{ url_for('hypeline_follow', username=username  )}} " style="text-decoration:none;" class="btn btn-danger btn-sm" role="button"> <span class="glyphicon glyphicon-wrench"></span> FOLLOW </a>
 	              	{% endif %}
 	            {% endfor %}
 	            </div>
 	            <div class="panel-body">
 	              <p>Hype : {{ text }}</p>
 	              <p>Date : {{ date }}</p>
+		      <td> <a href="{{ url_for('sport_page_add', follower_id=user_id  )}} " style="text-decoration:none;" class="btn btn-danger btn-sm" role="button"> <span class="glyphicon glyphicon-wrench"></span> FOLLOW </a>
+			   <a href="{{ url_for('sport_page_delete', follower_id=user_id)}} " style="text-decoration:none;" class="btn btn-danger btn-sm" role="button"> <span class="glyphicon glyphicon-remove"></span> UNFOLLOW </a>
+	       	      </td>
 	            </div>
 	            <div class="panel-body">
 	              <a href="{{ url_for('music_page_add', hype_id=hype_id) }}" class="btn btn-default btn-lg active" role="button">Rehype</a>
