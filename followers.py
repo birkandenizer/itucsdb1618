@@ -21,6 +21,17 @@ class followers:
                 connection.rollback()
             finally:
                connection.commit()
+            
+    def drop_table(self):
+        with dbapi2.connect(self.app.config['dsn']) as connection:
+            try:
+                cursor = connection.cursor()
+                query = """DROP TABLE IF EXISTS FOLLOWER"""
+                cursor.execute(query)
+            except dbapi2.DatabaseError:
+                connection.rollback()
+            finally:
+               connection.commit()
 
     def show_followers(self):
         with dbapi2.connect(self.app.config['dsn']) as connection:
