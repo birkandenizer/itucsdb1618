@@ -21,6 +21,17 @@ class block:
                 connection.rollback()
             finally:
                connection.commit()
+    
+    def drop_table(self):
+        with dbapi2.connect(self.app.config['dsn']) as connection:
+            try:
+                cursor = connection.cursor()
+                query = """DROP TABLE IF EXISTS BLOCKED"""
+                cursor.execute(query)
+            except dbapi2.DatabaseError:
+                connection.rollback()
+            finally:
+               connection.commit()
 
     def show_blocked(self):
         with dbapi2.connect(self.app.config['dsn']) as connection:
