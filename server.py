@@ -202,6 +202,7 @@ def add_user():
     app.user.Add_Users(username, name, surname, email, password)
     user_id=app.user.Get_User(username)
     user_id = user_id[0][0]
+    app.followers.add_follow(user_id, user_id)
     return render_template("picture.html", user_id = user_id)
 
 @app.route('/updateUser', methods=['POST'])
@@ -298,7 +299,7 @@ def delete_hypeblock():
 
 @app.route('/hypeline')
 def hypeline_page():
-    return render_template('hypeline.html', hypes = app.hypeline.List_Hypes(), url = app.picture.get_url(session['userid']))
+    return render_template('hypeline.html', hypes = app.hypeline.List_Hypes_Hypeline(session['userid']), url = app.picture.get_url(session['userid']))
 
 @app.route('/hypeline/hype', methods=['POST'])
 def hypeline_hype():
