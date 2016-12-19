@@ -129,15 +129,6 @@ def drop_database():
         query = """DROP TABLE IF EXISTS COMMENTS"""
         cursor.execute(query)
 
-        query = """DROP TABLE IF EXISTS FOLLOWER"""
-        cursor.execute(query)
-
-        query = """DROP TABLE IF EXISTS BLOCKED"""
-        cursor.execute(query)
-        
-        query = """DROP TABLE IF EXISTS DISLIKES"""
-        cursor.execute(query)
-
         connection.commit()
         
         app.hypeblock.drop_table()
@@ -148,6 +139,9 @@ def drop_database():
         app.rehype.drop_Rehype()
         app.trending.drop_Trending()
         app.hype.Drop_Comments()
+        app.block.drop_table()
+        app.followers.drop_table()
+        app.dislike.drop_table()
         app.hype.Drop_Tags()
         app.hype.Drop_Hypes()
 
