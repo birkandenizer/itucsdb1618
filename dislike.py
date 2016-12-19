@@ -22,6 +22,17 @@ class dislike:
                 connection.rollback()
             finally:
                connection.commit()
+            
+    def drop_table(self):
+        with dbapi2.connect(self.app.config['dsn']) as connection:
+            try:
+                cursor = connection.cursor()
+                query = """DROP TABLE IF EXISTS DISLIKES"""
+                cursor.execute(query)
+            except dbapi2.DatabaseError:
+                connection.rollback()
+            finally:
+               connection.commit()
 
     def List_Hypes(self):
         with dbapi2.connect(self.app.config['dsn']) as connection:
