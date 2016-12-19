@@ -13,8 +13,7 @@
 			<table class="table table-bordered table-striped">
 				<tr>
 				<th class="col-sm-1"> SELECT </th>
-				<th class="col-sm-1"> HYPE_ID </th>
-				<th class="col-sm-6"> HYPE </th>
+				<th class="col-sm-7"> HYPE </th>
 				<th class="col-sm-2"> TOPIC </th>
 				<th class="col-sm-2"> DATE </th>
 				</tr>
@@ -22,7 +21,6 @@
 				{% for hype_id, user_id, date, text, topic in hypes %}
 				<tr>
 				<td> <input type="checkbox" name="hype_dislike" value="{{hype_id}}"> </td>
-				<td> {{ hype_id }}</td>
 				<td> {{ text }} </td>
 				<td> {{ topic }} </td>
 				<td> {{ date }} </td>
