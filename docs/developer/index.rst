@@ -1,10 +1,54 @@
 Developer Guide
 ===============
+Installation
+____________
+**Requirements**
+~~~~~~~~~~~~
+* Postgresql
+* python3.4>
+* psycopg2
+* flask
+
+**Setting the running environment**
+-------------------------------
+1. Set running port for postgresql to 5432
+
+2. Create user in postgresql with name='vagrant' and  password='vagrant'
+
+3. Create database for user vagrant with name 'itucsdb1618'
+
+
+**Run application**
+~~~~~~~~~~~~~~~
+1. Get our code from github . You can see our git clone address below:
+
+   https://github.com/itucsdb1618/itucsdb1618.git
+
+2. Go to the 'itucsdb1618' folder then execute command below respectively:
+
+   *cd itucsdb1618*
+
+   *python3 server.py*
+
+3. Open a web browser and type this address on address bar:
+
+   *localhost:5000*
+
+4. After open the website, firstly create table with following address:
+
+   *localhost:5000/initdb*
+
+5. Now, you can browse the website.
+
+6. Also, this project is built and run in bluemix,You can browse the website from http://itucsdb1618.mybluemix.net.
 
 Database Design
 ---------------
+   Database design of our projects is implemented separately by each member. 
+   
+   There are major tables which are Hypes and Users. Also, there are minor tables which use the information provided by these major tables which are Favorites, Dislikes, Rehypes, Hypeblocks, Tags, Trending, Comments, Attachment, Roles, Picture, Blocked User and Follower. Minor tables are referenced as foreign keys to necessary corresponding columns of major tables. Also, there is an independent table which is Contact table. It is getting message from guests on contact page.
 
-**explain the database design of your project**
+Detailed database relations can be seen below:
 
 .. figure:: https://github.com/itucsdb1618/itucsdb1618/blob/master/docs/static/Entity%20Relationship%20Diagram.jpg
    :scale: 50 %
