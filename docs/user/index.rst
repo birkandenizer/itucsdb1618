@@ -1,16 +1,25 @@
 User Guide
 ==========
 
-**explain how your application works from the user perspective, use
-screenshots whereever appropriate**
+Our application provides to user send hype that have limited characters and about any topics. Users can rehype from hypes, add hype to favorite list, dislike list. Therefore users continue to contact people on social network. Visitor, who wants to communicate with us, can use contact page.
 
-**to add a picture, use the following example**::
+Visitiors firstly encounter homepage which shown below after they enter the website.
 
-   .. figure:: picture.png
-      :scale: 50 %
-      :alt: map to buried treasure
+.. figure:: /docs/home.png
+   :scale: 50 %
+      
+   Home Page
+==========
 
-      This is the caption of the figure (a simple paragraph).
+Visitors can use login menu, therefore they are directed to hypeline page.
+
+.. figure:: /docs/Hypeline.png
+   :scale: 50 %
+      
+   Hypeline Page
+==========
+
+Team member explain all function in their section...
 
 .. toctree::
 
