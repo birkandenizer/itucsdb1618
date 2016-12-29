@@ -5,7 +5,7 @@ Our application provides to user send hype that have limited characters and abou
 
 Visitiors firstly encounter homepage which shown below after they enter the website.
 
-.. figure:: /docs/home.png
+.. figure:: /static/home.png
    :scale: 50 %
       
    Home Page
@@ -13,7 +13,7 @@ Visitiors firstly encounter homepage which shown below after they enter the webs
 
 Visitors can use login menu, therefore they are directed to hypeline page.
 
-.. figure:: /docs/Hypeline.png
+.. figure:: /static/home.png
    :scale: 50 %
       
    Hypeline Page
