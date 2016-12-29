@@ -1,17 +1,22 @@
-Welcome to itucsdb's documentation!
-===================================
+Welcome to itucsdb1618's documentation!
+=======================================
 
-:Team: Team Name
+:Team: Hyper
 
 :Members:
 
-   * Member 1
-   * Member 2
-   * Member 3
-   * Member 4
-   * Member 5
+   * Utku Öner
+   * Ali Onat Üner
+   * Birkan Denizer
+   * Bora Ünal
+   * Cumali Abalık
 
-**project description goes here (a few paragraphs)**
+
+**Hyper**
+
+Hyper is a microblogging website which helps you to connect and share with the people in your life. Our database holds variety of tables from users to dislikes on hypes. You can add new hypes, select those hypes to favorite, rehype and do more! Finally we will present you that information in a personalized way so that you can have time to explore for more on different topics.
+
+..figure: home.png
 
 Contents:
 
