@@ -50,7 +50,7 @@ Database Design
 
 Detailed database relations can be seen below:
 
-.. figure:: /static/Entity Relationship Diagram.jpg
+.. figure:: /static/EntityRelationshipDiagram.jpg
    :scale: 50 %
    :alt: ER
 
