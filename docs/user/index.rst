@@ -13,7 +13,7 @@ Visitiors firstly encounter homepage which shown below after they enter the webs
 
 Visitors can use login menu, therefore they are directed to hypeline page.
 
-.. figure:: /static/home.png
+.. figure:: /static/Hypeline.png
    :scale: 50 %
       
    Hypeline Page
