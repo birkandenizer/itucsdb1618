@@ -50,7 +50,7 @@ Database Design
 
 Detailed database relations can be seen below:
 
-.. figure:: https://github.com/itucsdb1618/itucsdb1618/blob/master/docs/static/Entity%20Relationship%20Diagram.jpg
+.. figure:: /static/Entity Relationship Diagram.jpg
    :scale: 50 %
    :alt: ER
 
