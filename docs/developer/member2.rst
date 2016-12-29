@@ -1,7 +1,5 @@
-Parts Implemented by Member Name
-================================
-
 Parts Implemented by Onat Uner
+================================
 
 .. figure:: /static/33_hypeline.png
 hypeline_hype() function gets the required information from the hypeline.html and calls the Add_Hype() function to create a new entry in the HYPES table. Then the HYPE_ID of the inserted entry is taken with the Get_Hype_ID() function.
