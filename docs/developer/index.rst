@@ -6,7 +6,11 @@ Database Design
 
 **explain the database design of your project**
 
-**include the E/R diagram(s)**
+.. figure:: https://github.com/itucsdb1618/itucsdb1618/blob/master/docs/static/Entity%20Relationship%20Diagram.jpg
+   :scale: 50 %
+   :alt: ER
+
+   The ER Diagram of our database.
 
 Code
 ----
