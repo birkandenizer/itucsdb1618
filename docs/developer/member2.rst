@@ -105,4 +105,6 @@ Select_All_Hypes() selects all the hypes in the HYPES table and returns it.
 Comment_Hype() takes the required information as variables then adds a new entry to the COMMENTS table using these variables.
 
 .. figure:: /static/20_add_tags.png
+    :scale: 50 %
+    :alt: Add Tags
 Add_Tags() takes the required information as variables then adds a new entry to the TAGS table using these variables.
