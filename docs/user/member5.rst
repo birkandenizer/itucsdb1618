@@ -1,10 +1,10 @@
 Parts Implemented by Cumali Abalık
 ================================
-    I implemented Follower, Dislike and Block Hype tables for our micro-blogging website. I implemented my Follower and Block table functionality on Sport Page, the other table, Dislike funtion, is implemented on a its special page. I added these functionalities to necessary pages on our website after completed table assignments.
+    I implemented Follower, Dislike and Block User tables for our micro-blogging website. I implemented my Follower and Block table functionality on Sport Page, the other table, Dislike funtion, is implemented on a its special page. I added these functionalities to necessary pages on our website after completed table assignments.
 
 Sport Page
 -----------
-This page is showing hypes that topic is Sport. In this page user can Follow or Unfollow the users. Also, user can block any hype with or without write a reason and with selecting a hype. 
+This page is showing hypes that topic is Sport. In this page user can Follow or Unfollow the users. Also, user can block any user with or without write a reason and with selecting a hype/user line. 
 
 .. figure:: /static/CA_1.Sport_Page.png
    :scale: 50 %
@@ -12,27 +12,27 @@ This page is showing hypes that topic is Sport. In this page user can Follow or 
 
    Screenshot of the Sport Page.
    
-Block Hype Example
+Block User Example
 ------------------
    
-   User can block any hype with or without write a reason and with selecting a hype as shown below:
+   User can block any user with or without write a reason and with selecting a hype/user line as shown below:
    
 .. figure:: /static/CA_3.Block_exp.png
    :scale: 50 %
-   :alt: Block Hype Example
+   :alt: Block User Example
 
-   Screenshot of Block Hype Example.
+   Screenshot of Block User Example.
    
-UnBlock Hype Example
+UnBlock User Example
 --------------------
    
-   User can unblock hype on page that shows list of blocked hypes:
+   User can unblock user on page that shows list of blocked users:
    
 .. figure:: /static/CA_4.block_unblock.png
    :scale: 50 %
-   :alt: UnBlock Hype Example
+   :alt: UnBlock User Example
 
-   Screenshot of UnBlock Hype Example.
+   Screenshot of UnBlock User Example.
    
 Updating Block Reason 
 ----------------------
