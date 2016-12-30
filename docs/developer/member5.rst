@@ -304,7 +304,7 @@ This table implements blocking users by user.
    - *HYPE_ID* hype which one will be dislike
    - *USER_ID* is user who makes the dislike
    - *REASON* Reason of dislike.
-   - *DATE* date of blocking time
+   - *DATE* date of dislike time
    
 **SQL statement for dislike class :**
 
