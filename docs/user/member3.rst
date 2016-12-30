@@ -42,7 +42,7 @@ Contact page
 
 .. figure:: /static/00_contact.png
 
-Contact link on the top right cornet
+Contact link on the top right corner
 
 .. figure:: /static/0_contact_add.png
 
